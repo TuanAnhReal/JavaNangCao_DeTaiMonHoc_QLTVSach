@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu Test - Centered</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 flex justify-center items-center">
+
+    <div class="relative">
+
+        <button id="user-menu-button" class="flex items-center text-sm rounded-full">
+            <img class="h-12 w-12 rounded-full object-cover border-2 border-green-600" src="https://placehold.co/100x100/E2E8F0/4A5568?text=User" alt="Avatar">
+        </button>
+
+        <div id="user-menu" class="hidden absolute right-0 mt-2 w-72 origin-top-right bg-white rounded-xl shadow-2xl z-20 border-t-4 border-green-600">
+            <div class="p-4 border-b">
+                <p class="text-lg font-bold">Tên Người Dùng</p>
+                <p class="text-sm">Vai trò: user</p>
+            </div>
+            <div class="p-2">
+                <a href="#" class="block px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100">Thông tin cá nhân</a>
+                <a href="#" class="block px-4 py-3 text-sm text-red-600 rounded-lg hover:bg-red-50">Đăng xuất</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userMenu = document.getElementById('user-menu');
+
+            if (userMenuButton && userMenu) {
+                userMenuButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    userMenu.classList.toggle('hidden');
+                });
+                window.addEventListener('click', (event) => {
+                    if (!userMenu.classList.contains('hidden') && !userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+                        userMenu.classList.add('hidden');
+                    }
+                });
+            } else {
+                alert("Lỗi: Không tìm thấy button hoặc menu!");
+            }
+        });
+    </script>
+
+</body>
+</html>
