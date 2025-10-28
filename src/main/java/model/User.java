@@ -17,6 +17,8 @@ public class User {
     // Thuộc tính từ bảng ThongTinNguoiDung
         private int idNguoiDung;
     private String ten;
+    private String gioiTinh;
+    private String diaChi;
     private String email;
     private String sdt;
     private int tien;

@@ -53,9 +53,6 @@ public class HomeUsersServlet extends HttpServlet {
             case "infoUser":
                 xuLyInfoUser(request, response);
                 break;
-            case "logout":
-                xuLyLogout(request, response);
-                break;
         }
     }
 
