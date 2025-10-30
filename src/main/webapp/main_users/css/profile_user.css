@@ -1,0 +1,55 @@
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Style cho icon bên trong */
+.input-icon {
+    position: absolute;
+    left: 0.75rem; /* 12px */
+    pointer-events: none; /* Cho phép click xuyên qua icon */
+    color: #9CA3AF; /* text-gray-400 */
+}
+
+/* Style cho input khi có icon bên trái */
+.input-with-icon {
+    @apply w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150;
+    /* * @apply sẽ không hoạt động ở đây,
+     * đây là các class Tailwind tương đương:
+     */
+    width: 100%;
+    padding-left: 2.5rem;  /* 40px */
+    padding-right: 1rem;   /* 16px */
+    padding-top: 0.75rem;    /* 12px */
+    padding-bottom: 0.75rem; /* 12px */
+    border-width: 1px;
+    border-color: #D1D5DB; /* border-gray-300 */
+    border-radius: 0.5rem; /* rounded-lg */
+    transition: all 0.15s ease-in-out;
+}
+
+.input-with-icon:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.3); /* Tương đương focus:ring-primary */
+    outline: none;
+}
+
+/* THÊM CODE MỚI BÊN DƯỚI */
+
+/* * Style riêng cho thẻ <select> để trông giống
+ * với các ô input khác và thêm mũi tên tùy chỉnh.
+ */
+select.input-with-icon {
+    /* Tắt giao diện mặc định của hệ điều hành */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    /* Thêm icon mũi tên (lấy từ Tailwind UI) */
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center; /* Căn phải 12px */
+    background-repeat: no-repeat;
+    background-size: 1.25em; /* Kích thước icon */
+    padding-right: 2.5rem; /* Thêm padding bên phải để icon không đè lên chữ */
+}

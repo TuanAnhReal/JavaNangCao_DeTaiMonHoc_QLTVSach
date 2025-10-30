@@ -11,13 +11,22 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.User;
+import model.UserDAO;
 
 /**
  *
  * @author ADMIN
  */
-@WebServlet(name = "InfoUserServlet", urlPatterns = {"/InfoUserServlet"})
+@WebServlet(name = "InfoUserServlet", urlPatterns = {"/info-user"})
 public class InfoUserServlet extends HttpServlet {
+
+    UserDAO uDAO;
+
+    @Override
+    public void init() throws ServletException {
+        uDAO = new UserDAO();
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,8 +39,6 @@ public class InfoUserServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -46,7 +53,30 @@ public class InfoUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "formUser";
+        }
+        switch (action) {
+            case "formUser":
+                xuLyInfoUser(request, response);
+                break;
+            case "update":
+                System.out.println("Chỉnh sửa thông tin User");
+                xuLyUpdateUser(request, response);
+                break;
+            case "form-dangsach":
+                System.out.println("Mở form đăng sách");
+                break;
+            case "push-sach":
+                System.out.println("Up sách lên server");
+                break;
+        }
+
     }
 
     /**
@@ -60,7 +90,8 @@ public class InfoUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        // Gọi doGet để xử lý cả request POST
+        doGet(request, response);
     }
 
     /**
@@ -73,4 +104,25 @@ public class InfoUserServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private void xuLyInfoUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        //gọi đến trang thông tin của user hiện hành
+        request.getRequestDispatcher("/main_users/info_user.jsp").forward(request, response);
+    }
+
+    private void xuLyUpdateUser(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("IdNguoiDung"));
+        String ten = request.getParameter("Ten");
+        String gioitinh = request.getParameter("GioiTinh");
+        String email = request.getParameter("Email");
+        String diachi = request.getParameter("DiaChi");
+        String sdt = request.getParameter("SDT");
+
+        User u = new User(id, ten, gioitinh, diachi, email, sdt);
+        uDAO.updateUser(u);
+
+        request.setAttribute("success", "Cập nhật thông tin thành công!");
+        request.getRequestDispatcher("/main_users/info_user.jsp").forward(request, response);
+    }
 }

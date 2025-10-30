@@ -46,7 +46,7 @@ public class UserDAO {
     //lấy ra thông tin tài khoản để so sánh từ client
     public User checkLogin(String tenDangNhap, String matKhau) {
         String sql = "SELECT tk.IdTK, tk.TenDangNhap, tk.MatKhau, tk.VaiTro, "
-                + "tt.IdNguoiDung, tt.Ten, tt.Email, tt.SDT, tt.Tien "
+                + "tt.IdNguoiDung, tt.Ten, tt.GioiTinh, tt.DiaChi, tt.Email, tt.SDT, tt.Tien "
                 + "FROM TaiKhoan tk JOIN ThongTinNguoiDung tt ON tk.IdTK = tt.IdTK "
                 + "WHERE tk.TenDangNhap = ? AND tk.MatKhau = ?";
 
@@ -66,6 +66,8 @@ public class UserDAO {
                     u.setMatKhau(rs.getString("MatKhau")); // Thường không set mật khẩu vào đối tượng session
                     u.setVaiTro(rs.getString("VaiTro"));
                     u.setTen(rs.getString("Ten"));
+                    u.setGioiTinh(rs.getString("GioiTinh"));
+                    u.setDiaChi(rs.getString("DiaChi"));
                     u.setEmail(rs.getString("Email"));
                     u.setSdt(rs.getString("SDT"));
                     u.setTien(rs.getInt("Tien"));
@@ -146,6 +148,28 @@ public class UserDAO {
     }
 
     //đổi mật khảu cho user
+    
     //lấy lại mật khẩu khi quên: dùng tạm SDT làm khóa cho việc lấy lại mk
+    
     //sửa thông tin cho Người Dùng
+     public boolean updateUser(User u) {
+        String sql = "UPDATE ThongTinNguoiDung SET Ten = ?, GioiTinh = ?, DiaChi = ?, Email = ?, SDT = ?  WHERE IdNguoiDung = ?";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, u.getTen());
+            ps.setString(2, u.getGioiTinh());
+            ps.setString(3, u.getDiaChi());
+            ps.setString(4, u.getEmail());
+            ps.setString(5, u.getSdt());
+            ps.setInt(6, u.getIdNguoiDung());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi cập nhật người dùng:");
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

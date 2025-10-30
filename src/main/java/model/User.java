@@ -9,13 +9,14 @@ package model;
  * @author PC
  */
 public class User {
+
     // Thuộc tính từ bảng TaiKhoan
     private String tenDangNhap;
     private String matKhau;
     private String vaiTro;
 
     // Thuộc tính từ bảng ThongTinNguoiDung
-        private int idNguoiDung;
+    private int idNguoiDung;
     private String ten;
     private String gioiTinh;
     private String diaChi;
@@ -24,6 +25,15 @@ public class User {
     private int tien;
 
     public User() {
+    }
+
+    public User(int idNguoiDung, String ten, String gioiTinh, String diaChi, String email, String sdt) {
+        this.idNguoiDung = idNguoiDung;
+        this.ten = ten;
+        this.gioiTinh = gioiTinh;
+        this.diaChi = diaChi;
+        this.email = email;
+        this.sdt = sdt;
     }
 
     public User(String tenDangNhap, String matKhau, String vaiTro, int idNguoiDung, String ten, String email, String sdt, int tien) {
@@ -56,7 +66,21 @@ public class User {
         return "User{" + "idNguoiDung=" + idNguoiDung + ", ten=" + ten + ", email=" + email + ", sdt=" + sdt + ", tien=" + tien + '}';
     }
 
+    public String getGioiTinh() {
+        return gioiTinh;
+    }
 
+    public void setGioiTinh(String gioiTinh) {
+        this.gioiTinh = gioiTinh;
+    }
+
+    public String getDiaChi() {
+        return diaChi;
+    }
+
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
+    }
 
     public String getTenDangNhap() {
         return tenDangNhap;
@@ -121,6 +145,5 @@ public class User {
     public void setTien(int tien) {
         this.tien = tien;
     }
-
 
 }

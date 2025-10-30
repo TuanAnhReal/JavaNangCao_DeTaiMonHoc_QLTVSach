@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 public class Sach {
     // Thuộc tính trực tiếp từ bảng Sach
-    private int id; // Từ IdSach
+    private int idSach; // Từ IdSach
     private String tieuDe;
     private int gia;
     private String anh; // Đường dẫn tới file ảnh
@@ -23,8 +23,11 @@ public class Sach {
 
     private TheLoai theLoai; // Thay cho IdTheLoai
 
+    public Sach() {
+    }
+
     public Sach(int id, String tieuDe, int gia, String anh, String tep, LocalDateTime ngayDang, User nguoiDang, TheLoai theLoai) {
-        this.id = id;
+        this.idSach = id;
         this.tieuDe = tieuDe;
         this.gia = gia;
         this.anh = anh;
@@ -35,7 +38,7 @@ public class Sach {
     }
 
     public Sach(int id, String tieuDe, int gia, String anh, LocalDateTime ngayDang, TheLoai theLoai) {
-        this.id = id;
+        this.idSach = id;
         this.tieuDe = tieuDe;
         this.gia = gia;
         this.anh = anh;
@@ -43,13 +46,14 @@ public class Sach {
         this.theLoai = theLoai;
     }
 
-    public int getId() {
-        return id;
+    public int getIdSach() {
+        return idSach;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdSach(int idSach) {
+        this.idSach = idSach;
     }
+
 
     public String getTieuDe() {
         return tieuDe;
