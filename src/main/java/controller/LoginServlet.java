@@ -100,23 +100,28 @@ public class LoginServlet extends HttpServlet {
 
     private void xuLyLogin(HttpServletRequest request, HttpServletResponse response) {
         try {
-            //Lấy tk, mk từ client
             String tentk = request.getParameter("TenTK");
             String matkhau = request.getParameter("MatKhau");
 
-            // gọi hàm so sánh trong DAO
             var user = uDAO.checkLogin(tentk, matkhau);
 
-            // lấy dữ liệu trong sql ra để so sánh
-            if (user != null && "admin".equals(user.getVaiTro())) {
+            if (user != null) {
+                String vaiTro = user.getVaiTro();
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                response.sendRedirect(request.getContextPath() + "/admin/home");
-            }
-            else if (user != null && "user".equals(user.getVaiTro())) {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", user);
-                response.sendRedirect(request.getContextPath() + "/trang-chu");
+                System.out.println("tk: " + user);
+
+                // SỬ DỤNG equalsIgnoreCase() để đảm bảo hoạt động với 'admin', 'Admin', 'ADMIN'...
+                if ("admin".equalsIgnoreCase(vaiTro)) {
+                    response.sendRedirect(request.getContextPath() + "/admin/home");
+                    return;
+                } else if ("user".equalsIgnoreCase(vaiTro)) {
+                    response.sendRedirect(request.getContextPath() + "/trang-chu");
+                } else {
+                    // Xử lý vai trò không xác định hoặc không hợp lệ
+                    request.setAttribute("error", "Tài khoản có vai trò không hợp lệ.");
+                    request.getRequestDispatcher("/login/index_login.jsp").forward(request, response);
+                }
             } else {
                 request.setAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
                 request.getRequestDispatcher("/login/index_login.jsp").forward(request, response);

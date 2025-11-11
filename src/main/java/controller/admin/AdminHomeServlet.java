@@ -62,27 +62,24 @@ public class AdminHomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
 
-        // 1. Lấy dữ liệu thực tế (Admin không cần xử lý LocalDateTime)
+        // 1. Lấy dữ liệu SÁCH TỪ CSDL (Cần bổ sung getAllBooksForAdmin() trong SachDAO)
+        // List<Sach> allBooks = sachDAO.getAllBooksForAdmin(); 
+        // 2. Lấy dữ liệu THỂ LOẠI THỰC TẾ
         List<TheLoai> allCategories = theLoaiDAO.getAllTheLoai();
-        // Lấy tất cả sách cho quản lý (chúng ta sẽ tối ưu sau, tạm thời lấy hết)
-        // List<Sach> allBooks = sachDAO.getAllBooksForAdmin(); // Cần tạo phương thức này trong SachDAO
 
-        // 2. Chuyển đổi sang JSON
+        // 3. Chuyển đổi sang JSON
+        // String booksJson = gson.toJson(allBooks);
         String categoriesJson = gson.toJson(allCategories);
-        // String booksJson = gson.toJson(allBooks); // Nếu đã có
 
-        // 3. Gửi chuỗi JSON sang JSP
-        request.setAttribute("categoriesJson", categoriesJson);
+        // 4. Gửi chuỗi JSON sang JSP
         // request.setAttribute("booksJson", booksJson);
+        request.setAttribute("categoriesJson", categoriesJson); // Dùng để thay thế mockCategoryData
 
-        // 4. Forward tới trang Admin Dashboard
+        // 5. Forward tới trang Admin Dashboard
         request.getRequestDispatcher("/main_admin/index_admin.jsp").forward(request, response);
-
     }
 
     /**

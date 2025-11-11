@@ -98,12 +98,14 @@ public class AdminFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         HttpSession session = req.getSession(false);
+        // Lấy đối tượng user từ session nếu session tồn tại
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
         // 1. Kiểm tra đã đăng nhập chưa
         if (user == null) {
-            // Chưa đăng nhập, chuyển về trang login
-            req.setAttribute("error", "Bạn cần đăng nhập để truy cập trang này.");
+            // Lưu thông báo lỗi
+            req.setAttribute("error", "Vui lòng đăng nhập để truy cập trang quản trị.");
+            // Chuyển về trang đăng nhập
             req.getRequestDispatcher("/login/index_login.jsp").forward(req, res);
             return;
         }
@@ -113,7 +115,7 @@ public class AdminFilter implements Filter {
             // Là Admin, cho phép truy cập
             chain.doFilter(request, response);
         } else {
-            // Không có quyền, chuyển về trang chủ User
+            // Không có quyền, lưu thông báo lỗi và chuyển về trang chủ User
             req.setAttribute("error", "Bạn không có quyền truy cập trang quản trị.");
             res.sendRedirect(req.getContextPath() + "/trang-chu");
         }
