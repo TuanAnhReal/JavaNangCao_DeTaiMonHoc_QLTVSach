@@ -108,7 +108,12 @@ public class LoginServlet extends HttpServlet {
             var user = uDAO.checkLogin(tentk, matkhau);
 
             // lấy dữ liệu trong sql ra để so sánh
-            if (user != null && "user".equals(user.getVaiTro())) {
+            if (user != null && "admin".equals(user.getVaiTro())) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                response.sendRedirect(request.getContextPath() + "/admin/home");
+            }
+            else if (user != null && "user".equals(user.getVaiTro())) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 response.sendRedirect(request.getContextPath() + "/trang-chu");

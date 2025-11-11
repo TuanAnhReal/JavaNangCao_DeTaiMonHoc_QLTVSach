@@ -530,16 +530,16 @@
 
                     <!-- Modal Body: The Form (Cập nhật logic onsubmit) -->
                     <form onsubmit="event.preventDefault();
-                        const mode = document.getElementById('item-mode').value;
-                        if (mode.includes('user')) {
-                            saveUser();
-                        } else if (mode.includes('author')) {
-                            saveAuthorPublisher();
-                        } else if (mode.includes('category')) {
-                            saveCategory();
-                        } else {
-                            saveBook();
-                        }" 
+                            const mode = document.getElementById('item-mode').value;
+                            if (mode.includes('user')) {
+                                saveUser();
+                            } else if (mode.includes('author')) {
+                                saveAuthorPublisher();
+                            } else if (mode.includes('category')) {
+                                saveCategory();
+                            } else {
+                                saveBook();
+                            }" 
                           id="item-form">
                         <div class="modal-body">
                             <input type="hidden" id="item-mode" value="add">
@@ -682,6 +682,10 @@
             </div>
         </div>
 
+        <script>
+            // Đảm bảo categoriesJson được truyền từ AdminHomeServlet
+            const SERVER_CATEGORIES_JSON = '${categoriesJson}'; 
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="<%= request.getContextPath()%>/main_admin/js/js_admin.js"></script>
