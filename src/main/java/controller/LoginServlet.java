@@ -109,10 +109,9 @@ public class LoginServlet extends HttpServlet {
                 String vaiTro = user.getVaiTro();
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                System.out.println("tk: " + user);
 
                 // SỬ DỤNG equalsIgnoreCase() để đảm bảo hoạt động với 'admin', 'Admin', 'ADMIN'...
-                if ("admin".equalsIgnoreCase(vaiTro)) {
+                if ("Admin".equalsIgnoreCase(vaiTro)) {
                     response.sendRedirect(request.getContextPath() + "/admin/home");
                     return;
                 } else if ("user".equalsIgnoreCase(vaiTro)) {

@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Sach;
 import model.SachDAO;
 import model.TheLoai;
 import model.TheLoaiDAO;
@@ -65,20 +66,15 @@ public class AdminHomeServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
 
-        // 1. Lấy dữ liệu SÁCH TỪ CSDL (Cần bổ sung getAllBooksForAdmin() trong SachDAO)
-        // List<Sach> allBooks = sachDAO.getAllBooksForAdmin(); 
-        // 2. Lấy dữ liệu THỂ LOẠI THỰC TẾ
         List<TheLoai> allCategories = theLoaiDAO.getAllTheLoai();
+        List<Sach> allBooks = sachDAO.getAllBooksForAdmin();
 
-        // 3. Chuyển đổi sang JSON
-        // String booksJson = gson.toJson(allBooks);
+        String booksJson = gson.toJson(allBooks);
         String categoriesJson = gson.toJson(allCategories);
 
-        // 4. Gửi chuỗi JSON sang JSP
-        // request.setAttribute("booksJson", booksJson);
+        request.setAttribute("booksJson", booksJson);
         request.setAttribute("categoriesJson", categoriesJson); // Dùng để thay thế mockCategoryData
-
-        // 5. Forward tới trang Admin Dashboard
+        
         request.getRequestDispatcher("/main_admin/index_admin.jsp").forward(request, response);
     }
 

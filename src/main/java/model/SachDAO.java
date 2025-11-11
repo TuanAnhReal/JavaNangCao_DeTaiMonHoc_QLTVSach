@@ -195,4 +195,58 @@ public class SachDAO {
         }
         return list;
     }
+
+    public List<Sach> getAllBooksForAdmin() {
+        List<Sach> allBooks = new ArrayList<>();
+        // Lấy các cột chính + TenNguoiDang + TenTheLoai + TrangThai
+        String sql = "SELECT s.IdSach, s.TieuDe, s.Gia, s.Anh, s.Tep, s.NgayDang, "
+                + "tt.IdNguoiDung, tt.Ten AS TenNguoiDang, "
+                + "tl.IdTheLoai, tl.Ten AS TenTheLoai, "
+                + "tts.TrangThai AS TrangThaiSach " // Lấy trạng thái từ TrangThaiSach
+                + "FROM Sach s "
+                + "JOIN ThongTinNguoiDung tt ON s.IdNguoiDang = tt.IdNguoiDung "
+                + "LEFT JOIN TheLoai tl ON s.IdTheLoai = tl.IdTheLoai "
+                + "LEFT JOIN TrangThaiSach tts ON s.IdSach = tts.IdSach "
+                + "ORDER BY s.IdSach DESC";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Sach sach = new Sach();
+                sach.setIdSach(rs.getInt("IdSach"));
+                sach.setTieuDe(rs.getString("TieuDe"));
+                sach.setGia(rs.getInt("Gia"));
+                sach.setAnh(rs.getString("Anh"));
+                sach.setTep(rs.getString("Tep"));
+
+                Timestamp ts = rs.getTimestamp("NgayDang");
+                if (ts != null) {
+                    sach.setNgayDang(ts.toLocalDateTime());
+                }
+
+                User nguoiDang = new User();
+                nguoiDang.setIdNguoiDung(rs.getInt("IdNguoiDung"));
+                nguoiDang.setTen(rs.getString("TenNguoiDang"));
+                sach.setNguoiDang(nguoiDang);
+
+                TheLoai theLoai = new TheLoai();
+                theLoai.setIdTheLoai(rs.getInt("IdTheLoai"));
+                theLoai.setTenTheLoai(rs.getString("TenTheLoai"));
+                if (rs.wasNull()) {
+                    sach.setTheLoai(null);
+                } else {
+                    sach.setTheLoai(theLoai);
+                }
+
+                // *** THÊM DỮ LIỆU TỪ TRANGTHAISACH ***
+                // Gán trực tiếp vào Sach object (giả định bạn đã thêm getter/setter status và moTa vào Sach.java)
+                // Ví dụ: sach.setTrangThai(rs.getString("TrangThaiSach"));
+                // Vì không có model cập nhật, ta sẽ gửi raw object và dựa vào mapping trong JS.
+                allBooks.add(sach);
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi khi lấy tất cả sách cho Admin: " + e.getMessage());
+        }
+        return allBooks;
+    }
 }
