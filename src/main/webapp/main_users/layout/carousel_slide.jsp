@@ -7,18 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<section class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-    <!-- Search bar (Desktop/Tablet) -->
-    <div class="relative mb-8 shadow-xl rounded-xl hidden md:block">
-        <input type="text" id="desktop-search-input" onkeyup="liveSearch(this.value)"
-               class="w-full py-4 pl-12 pr-4 text-lg border-2 border-primary rounded-xl focus:ring-4 focus:ring-primary/50 focus:border-primary transition duration-200"
-               placeholder="Tìm kiếm sách, tác giả, thể loại...">
-            <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </div>
-    </div>
-
-    <h2 class="text-2xl font-bold mb-4 text-gray-800">Sách Nổi Bật</h2>
+<h2 class="text-2xl font-bold mb-4 text-gray-800">Sách Nổi Bật</h2>
     <div class="relative">
 
         <!-- Slider Content -->
@@ -82,4 +71,3 @@
             <!-- Dots sẽ được JS tạo ra -->
         </div>
     </div>
-</section>
