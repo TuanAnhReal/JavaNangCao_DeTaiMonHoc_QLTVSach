@@ -4,16 +4,24 @@
  */
 package controller;
 
-import controller.admin.*;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.GsonBuilder; // Cần thêm import này
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.time.LocalDateTime; // Cần thêm import này
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.User;
+import model.UserDAO;
 import model.Sach;
 import model.SachDAO;
 import model.TheLoai;
@@ -23,20 +31,26 @@ import model.TheLoaiDAO;
  *
  * @author PC
  */
-@WebServlet(name = "AdminHomeServlet", urlPatterns = {"/api"})
+@WebServlet(urlPatterns = {"/AdminAPI"})
 public class AdminAPIServlet extends HttpServlet {
 
-    private SachDAO sachDAO;
-    private TheLoaiDAO theLoaiDAO;
-    private Gson gson;
+    private final UserDAO userDAO = new UserDAO();
+    private final SachDAO sachDAO = new SachDAO();
+    private final TheLoaiDAO theLoaiDAO = new TheLoaiDAO();
+    // KHẮC PHỤC LỖI: Khởi tạo Gson với adapter cho LocalDateTime
+    private final Gson gson = new GsonBuilder()
+            // Đăng ký bộ tuần tự hóa cho LocalDateTime
+            .registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+                private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    @Override
-    public void init() throws ServletException {
-        sachDAO = new SachDAO();
-        theLoaiDAO = new TheLoaiDAO();
-        // Cần Gson để chuyển dữ liệu sang JS/Mock Data
-        gson = new GsonBuilder().create();
-    }
+                @Override
+                public JsonPrimitive serialize(LocalDateTime localDateTime, Type srcType, JsonSerializationContext context) {
+                    return new JsonPrimitive(formatter.format(localDateTime));
+                }
+            })
+            // Cấu hình Gson để không xuất ra các trường có giá trị null
+            .serializeNulls()
+            .create(); // Khởi tạo Gson
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -67,16 +81,53 @@ public class AdminAPIServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
 
-        List<TheLoai> allCategories = theLoaiDAO.getAllTheLoai();
-        List<Sach> allBooks = sachDAO.getAllBooksForAdmin();
-
-        String booksJson = gson.toJson(allBooks);
-        String categoriesJson = gson.toJson(allCategories);
-        response.getWriter().println(booksJson);
-        //request.setAttribute("booksJson", booksJson);
-        //request.setAttribute("categoriesJson", categoriesJson); // Dùng để thay thế mockCategoryData
+        String action = request.getParameter("action");
         
-       // request.getRequestDispatcher("/main_admin/index_admin.jsp").forward(request, response);
+        PrintWriter out = response.getWriter();
+        
+        try {
+            if ("listUsers".equals(action)) {
+                
+                List<User> userList = userDAO.getAll(); 
+                out.print(gson.toJson(userList));
+                
+            } else if ("listBooks".equals(action)) {
+                
+                // Lấy danh sách sách cho Admin (có thể bao gồm cả trạng thái nháp/chờ duyệt)
+                List<Sach> bookList = sachDAO.getAllBooksForAdmin(); 
+                out.print(gson.toJson(bookList));
+                
+            } else if ("listTheLoai".equals(action)) {
+                
+                // Lấy danh sách tất cả thể loại
+                List<TheLoai> categoryList = theLoaiDAO.getAllTheLoai(); 
+                out.print(gson.toJson(categoryList));
+                
+            } else {
+                // Xử lý action không xác định
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                out.print(gson.toJson(new ErrorResponse("Action not found")));
+            }
+        } catch (Exception e) {
+            // Xử lý lỗi server/DB
+            System.err.println("Lỗi AdminAPIServlet cho action " + action + ": " + e.getMessage());
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
+            out.print(gson.toJson(new ErrorResponse("Internal Server Error: " + e.getMessage())));
+        } finally {
+            out.flush();
+        }
+    }
+
+    // Lớp nội bộ đơn giản để trả về lỗi dưới dạng JSON
+    private static class ErrorResponse {
+
+        String status = "error";
+        String message;
+
+        public ErrorResponse(String message) {
+            this.message = message;
+        }
     }
 
     /**

@@ -1,90 +1,29 @@
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+/* * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/JavaScript.js to edit this template
  */
 // Khởi tạo Icons Lucide
-lucide.createIcons();
-// --- MOCK DATA ---
-let mockBooksData = [
-    {id: 'B001', title: 'Nhà Giả Kim', author: 'Paulo Coelho', category: 'Văn Học', price: 95000, description: 'Tóm tắt Nhà Giả Kim.', format: 'ebook', isPremium: false, status: 'Active'},
-    {id: 'B002', title: 'Tuần làm việc 4 giờ', author: 'Timothy Ferriss', category: 'Kỹ Năng', price: 120000, description: 'Tóm tắt Tuần làm việc 4 giờ.', format: 'ebook', isPremium: true, status: 'Active'},
-    {id: 'B003', title: 'Tư Duy Nhanh và Chậm', author: 'Daniel Kahneman', category: 'Khoa Học', price: 0, description: 'Tóm tắt Tư Duy Nhanh và Chậm.', format: 'audiobook', isPremium: false, status: 'Draft'},
-    {id: 'B004', title: 'Bí Mật của sự may mắn', author: 'Álex Rovira & Fernando Trías de Bes', category: 'Kinh Doanh', price: 100000, description: 'Tóm tắt Bí Mật của sự may mắn.', format: 'ebook', isPremium: true, status: 'Active'},
-    {id: 'B005', title: 'Đắc Nhân Tâm', author: 'Dale Carnegie', category: 'Kỹ Năng', price: 80000, description: 'Tóm tắt Đắc Nhân Tâm.', format: 'audiobook', isPremium: false, status: 'Active'},
-    {id: 'B006', title: 'Văn chương và Nỗi buồn', author: 'Trần Văn X', category: 'Văn Học', price: 70000, description: 'Tóm tắt Văn chương và Nỗi buồn.', format: 'ebook', isPremium: false, status: 'Active'},
-    {id: 'B007', title: 'Sách 7', author: 'Tác giả 7', category: 'Kỹ Năng', price: 70000, description: 'Mô tả.', format: 'ebook', isPremium: false, status: 'Active'},
-    {id: 'B008', title: 'Sách 8', author: 'Tác giả 8', category: 'Kinh Doanh', price: 70000, description: 'Mô tả.', format: 'ebook', isPremium: false, status: 'Active'},
-    {id: 'B009', title: 'Sách 9', author: 'Tác giả 9', category: 'Văn Học', price: 70000, description: 'Mô tả.', format: 'ebook', isPremium: false, status: 'Active'}
-];
-let mockUsersData = [
-    {id: 'U001', email: 'nguyenvana@gmail.com', status: 'Active', plan: 'Premium', registered: '2023-10-01'},
-    {id: 'U002', email: 'tranvanc@hotmail.com', status: 'Active', plan: 'Free', registered: '2024-01-15'},
-    {id: 'U003', email: 'levanb@yahoo.com', status: 'Archived', plan: 'Free', registered: '2023-05-20'},
-    {id: 'U004', email: 'phamthid@gmail.com', status: 'Active', plan: 'Premium', registered: '2024-02-01'},
-    {id: 'U005', email: 'hoangminhe@hotmail.com', status: 'Active', plan: 'Premium', registered: '2024-03-10'},
-    {id: 'U006', email: 'user6@test.com', status: 'Active', plan: 'Free', registered: '2024-04-10'},
-    {id: 'U007', email: 'user7@test.com', status: 'Active', plan: 'Premium', registered: '2024-05-10'}
-];
-let mockCategoryData = [
-    { id: 1, name: 'Kinh Doanh', count: 45, status: 'Active' },
-    { id: 2, name: 'Văn Học', count: 62, status: 'Active' },
-    { id: 3, name: 'Kỹ Năng Sống', count: 30, status: 'Active' },
-    { id: 4, name: 'Khoa Học', count: 15, status: 'Active' },
-    { id: 5, name: 'Tình Cảm', count: 35, status: 'Active' },
-    { id: 6, name: 'Lịch Sử', count: 20, status: 'Active' },
-    { id: 7, name: 'Thiếu Nhi', count: 10, status: 'Draft' },
-];
+// LƯU Ý QUAN TRỌNG: Lệnh gọi lucide.createIcons() bị xóa ở đây
+// và chỉ được gọi sau khi DOM đã được tải hoàn toàn (trong DOMContentLoaded)
+// để tránh lỗi "lucide is not defined".
 
-// === BỔ SUNG: DỮ LIỆU THỰC TẾ (CATEGORIES) ===
-let realCategoryData = []; // Biến mới để lưu dữ liệu thực
-let currentFilteredCategories = mockCategoryData; // Vẫn giữ biến này để tương thích với code cũ
+// =========================================================================================
+// --- KHAI BÁO BIẾN DỮ LIỆU THỰC TẾ (REAL DATA) ---
+let realUsersData = [];
+let realBooksData = []; 
+let realCategoryData = []; 
 
-// Hàm tải dữ liệu thể loại thực tế
-const loadRealCategoryData = () => {
-    try {
-        if (typeof SERVER_CATEGORIES_JSON !== 'undefined' && SERVER_CATEGORIES_JSON && SERVER_CATEGORIES_JSON.trim() !== "" && SERVER_CATEGORIES_JSON.trim() !== "[]") {
-            const serverCategories = JSON.parse(SERVER_CATEGORIES_JSON);
-            
-            // ÁNH XẠ: Lấy idTheLoai -> id, TenTheLoai -> name, gán mặc định count và status
-            realCategoryData = serverCategories.map(cat => ({
-                id: cat.idTheLoai,     
-                name: cat.tenTheLoai,  
-                count: 0,              // Giá trị mặc định
-                status: 'Active',      // Giá trị mặc định
-            }));
-            
-        } else {
-            console.warn("Không tìm thấy dữ liệu Thể loại từ server. Dùng Mock Data thay thế.");
-            realCategoryData = [...mockCategoryData]; 
-        }
-    } catch (e) {
-        console.error("Lỗi parse JSON Thể loại:", e, SERVER_CATEGORIES_JSON);
-        realCategoryData = [...mockCategoryData]; 
-    }
-    currentFilteredCategories = realCategoryData;
-};
-// CẬP NHẬT MOCK DATA CHO TÁC GIẢ/NXB (Thêm trường 'type')
-let mockAuthorData = [
-    {id: 'A001', name: 'Paulo Coelho', books: 3, status: 'Active', type: 'Author'},
-    {id: 'A002', name: 'Timothy Ferriss', books: 5, status: 'Active', type: 'Author'},
-    {id: 'A003', name: 'Nguyễn Nhật Ánh', books: 12, status: 'Active', type: 'Author'},
-    {id: 'P001', name: 'Nhà Xuất Bản Trẻ', books: 50, status: 'Active', type: 'Publisher'},
-    {id: 'P002', name: 'Nhà Xuất Bản Kim Đồng', books: 80, status: 'Active', type: 'Publisher'},
-];
-let mockCommentData = [
-    {id: 'CM01', user: 'U001', book: 'B001', content: 'Sách rất hay, nên đọc!', status: 'Active'},
-    {id: 'CM02', user: 'U002', book: 'B003', content: 'Tư duy tuyệt vời.', status: 'Active'},
-    {id: 'CM03', user: 'U004', book: 'B005', content: 'Phiên bản Audiobook chất lượng kém.', status: 'Draft'},
-    {id: 'CM04', user: 'U003', book: 'B002', content: 'Nội dung hơi khó hiểu.', status: 'Active'},
-    {id: 'CM05', user: 'U005', book: 'B004', content: 'Tác giả viết quá dài.', status: 'Draft'},
-    {id: 'CM06', user: 'U001', book: 'B006', content: 'Bình luận 6.', status: 'Active'},
-    {id: 'CM07', user: 'U002', book: 'B007', content: 'Bình luận 7.', status: 'Active'},
-];
+// --- MOCK DATA (CHỈ GIỮ LẠI KHAI BÁO ĐỂ LÀM DỰ PHÒNG VÀ CẤU TRÚC, KHÔNG CÓ DỮ LIỆU TĨNH) ---
+let mockBooksData = []; 
+let mockUsersData = []; 
+let mockCategoryData = [];
+let mockAuthorData = [];
+let mockCommentData = [];
 let mockSettings = {
     siteName: "Sách Việt Ebook",
     taxRate: 10,
     maxUploadSize: 500,
 };
+
 let bookOrUserToDelete = null;
 // --- PAGINATION STATE ---
 let itemsPerPage = 3;
@@ -96,42 +35,42 @@ let currentUserPage = 1;
 let currentFilteredUsers = mockUsersData;
 // Category Pagination State
 let currentCategoryPage = 1;
-//let currentFilteredCategories = mockCategoryData; // Sử dụng mockCategoryData
-let realBooksData = [];
+let currentFilteredCategories = mockCategoryData;
 // Author Pagination State
 let currentAuthorPage = 1;
-let currentFilteredAuthors = mockAuthorData; // Sử dụng mockAuthorData
-
+let currentFilteredAuthors = mockAuthorData; 
 // Comment Pagination State
 let currentCommentPage = 1;
 let currentFilteredComments = mockCommentData;
 // --- DOM REFERENCES ---
+// LƯU Ý: Đảm bảo thẻ script nhúng thư viện Bootstrap và Chart.js đã có sẵn trong trang JSP
+// để các biến như bootstrap.Modal, Chart được định nghĩa.
 const itemModal = new bootstrap.Modal(document.getElementById('itemModal'));
 const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
 const dom = {
     modalTitle: document.getElementById('modal-title'),
     deleteIdSpan: document.getElementById('delete-id'),
     deleteWarningMsg: document.getElementById('delete-warning-message'),
-    booksTableBody: document.getElementById('books-table-body'),
-    usersTableBody: document.getElementById('users-table-body'),
-    categoriesTableBody: document.getElementById('categories-table-body'), // Đã tồn tại
+    booksTableBody: document.getElementById('bookTableBody'), 
+    usersTableBody: document.getElementById('userTableBody'), 
+    categoriesTableBody: document.getElementById('theLoaiTableBody'), 
     authorsTableBody: document.getElementById('authors-table-body'),
     commentsTableBody: document.getElementById('comments-table-body'),
     noBooksMsg: document.getElementById('no-books-results-message'),
     noUsersMsg: document.getElementById('no-user-results-message'),
-    noCategoriesMsg: document.getElementById('no-categories-results-message'), // Đã tồn tại
+    noCategoriesMsg: document.getElementById('no-categories-results-message'), 
     noAuthorsMsg: document.getElementById('no-authors-results-message'),
     noCommentsMsg: document.getElementById('no-comments-results-message'),
     toastElement: document.getElementById('liveToast'),
     toastBody: document.querySelector('#liveToast .toast-body'),
     booksPaginationContainer: document.getElementById('books-pagination'),
     usersPaginationContainer: document.getElementById('users-pagination'),
-    categoriesPaginationContainer: document.getElementById('categories-pagination'), // Đã tồn tại
+    categoriesPaginationContainer: document.getElementById('categories-pagination'), 
     authorsPaginationContainer: document.getElementById('authors-pagination'),
     commentsPaginationContainer: document.getElementById('comments-pagination'),
     formFields: {
         title: document.getElementById('input-title'),
-        titleLabel: document.getElementById('input-title-label'), // THÊM MỚI: Label của input-title
+        titleLabel: document.getElementById('input-title-label'), 
         idDisplay: document.getElementById('item-id-display'),
         author: document.getElementById('author'),
         category: document.getElementById('category'),
@@ -145,57 +84,44 @@ const dom = {
         isAudioField: document.getElementById('is-audio-field'),
         premiumLabel: document.getElementById('is-premium-label'),
         premiumCheckTitle: document.getElementById('premium-check-title'),
-        authorTypeField: document.getElementById('author-type-field'), // THÊM MỚI: Trường loại Tác giả/NXB
-        authorType: document.getElementById('author-type'), // THÊM MỚI: Select loại Tác giả/NXB
+        authorTypeField: document.getElementById('author-type-field'), 
+        authorType: document.getElementById('author-type'), 
     }
 };
 // --- CHART INSTANCES ---
 let categoryBarChartInstance = null;
 let userDoughnutChartInstance = null;
-// --- UTILITY FUNCTIONS ---
-function mapDbBookToAdmin(dbBook) {
-    const defaultStatus = 'Draft'; 
-    const categoryName = dbBook.theLoai ? dbBook.theLoai.tenTheLoai : "Chưa phân loại";
-    
-    // Giả định: Các trường này phải được lấy từ DB hoặc Mock/Default nếu thiếu.
-    const bookStatus = dbBook.trangThai || defaultStatus; // Giả định trạng thái được lấy
-    const format = dbBook.theLoai && dbBook.theLoai.tenTheLoai === 'Sách Nói' ? 'audiobook' : 'ebook'; // Suy luận định dạng từ tên thể loại
-    const isPremium = dbBook.gia > 50000; // Suy luận Premium từ giá bán
-    
-    return {
-        id: 'B' + dbBook.idSach, // Thêm prefix 'B' để khớp với format ID Mock
-        title: dbBook.tieuDe,
-        author: dbBook.nguoiDang ? dbBook.nguoiDang.ten : "Không rõ",
-        category: categoryName,
-        price: dbBook.gia,
-        description: dbBook.moTaNgan || "Chưa có mô tả.", // Giả định có moTaNgan
-        format: format,
-        isPremium: isPremium,
-        status: bookStatus, 
-    };
-}
-/** Tải và Ánh xạ dữ liệu Sách từ Server */
-const loadRealBookData = () => {
+
+// =========================================================================================
+// --- UTILITY FUNCTIONS (FUNCTION DECLARATION cho hoisting) ---
+// =========================================================================================
+
+/**
+ * Hàm định dạng ngày tháng: 2025-11-21T14:33:00 -> 21/11/2025
+ */
+function formatDate(dateTimeString) {
+    if (!dateTimeString) return 'N/A';
     try {
-        if (typeof SERVER_BOOKS_JSON !== 'undefined' && SERVER_BOOKS_JSON && SERVER_BOOKS_JSON.trim() !== "" && SERVER_BOOKS_JSON.trim() !== "[]") {
-            const serverBooks = JSON.parse(SERVER_BOOKS_JSON);
-            realBooksData = serverBooks.map(mapDbBookToAdmin);
-        } else {
-             console.warn("Không tìm thấy dữ liệu sách từ server. Dùng Mock Data.");
-             realBooksData = [...mockBooksData]; 
-        }
+        const datePart = dateTimeString.split('T')[0]; 
+        const parts = datePart.split('-');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
     } catch (e) {
-        console.error("Lỗi parse JSON sách:", e, SERVER_BOOKS_JSON);
-        realBooksData = [...mockBooksData];
+        return dateTimeString; 
     }
 };
-const formatCurrency = (amount) => {
-    if (amount === 0 || amount === '0' || amount === null)
+
+function formatCurrency(amount) {
+    if (amount === 0 || amount === '0' || amount === null || amount === undefined)
         return 'Miễn Phí';
-    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+    const num = parseInt(amount);
+    if (isNaN(num)) return 'N/A';
+    
+    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(num);
 };
+
 const generateId = (prefix) => prefix + Math.random().toString(36).substring(2, 8).toUpperCase();
-const getStatusStyles = (status) => {
+
+function getStatusStyles(status) {
     switch (status) {
         case 'Active':
             return {text: 'Active', badgeClass: 'bg-success text-white'};
@@ -210,27 +136,17 @@ const getStatusStyles = (status) => {
     }
 };
 /** TẠO DROPDOWN THỂ LOẠI ĐỘNG */
-const populateCategoryDropdown = (selectedValue = '') => {
-    const dropdown = dom.formFields.category; // Lấy <select id="category">
-    if (!dropdown)
-        return;
+function populateCategoryDropdown(selectedValue = '') {
+    const dropdown = dom.formFields.category; 
+    if (!dropdown) return;
 
-    // Xóa tất cả các tùy chọn cũ
     dropdown.innerHTML = '<option value="">Chọn Thể loại</option>';
 
-    // Sử dụng currentFilteredCategories, đã được khởi tạo bằng mock hoặc real data
-    const categories = currentFilteredCategories.filter(c => c.status === 'Active' || c.status === 'Draft');
+    const categories = realCategoryData.length > 0 ? realCategoryData : mockCategoryData;
 
-    categories.forEach(cat => {
+    categories.filter(c => c.status === 'Active' || c.status === 'Draft').forEach(cat => {
         const option = document.createElement('option');
-        // Đối với dữ liệu Mock: cat.name là tên. 
-        // Đối với dữ liệu CSDL: Cần dùng ID (ví dụ: cat.idTheLoai) để gửi về Servlet.
-
-        // Vì hiện tại Mock sử dụng tên cho cả value và display, chúng ta sẽ giữ nguyên tên.
-        // NHƯNG để tương thích với Servlet tương lai, ta nên dùng ID. 
-        // Do dữ liệu Mock sử dụng ID dạng Cxxx và name dạng Văn Học, ta dùng name làm value tạm thời
-
-        option.value = cat.name; // Gán Tên thể loại làm giá trị (value)
+        option.value = cat.name; 
         option.textContent = cat.name;
 
         if (cat.name === selectedValue) {
@@ -239,88 +155,174 @@ const populateCategoryDropdown = (selectedValue = '') => {
         dropdown.appendChild(option);
     });
 };
-/** TÍNH TOÁN LẠI SỐ LƯỢNG SÁCH CHO TÁC GIẢ VÀ THỂ LOẠI (MOCK SYNC) */
-const synchronizeMetadata = () => {
-// 1. Đồng bộ số lượng sách cho Tác giả
-    const authorCounts = mockBooksData.reduce((acc, book) => {
-        const authorName = book.author || 'N/A';
-        if (authorName !== 'N/A') {
-            acc[authorName.toLowerCase()] = (acc[authorName.toLowerCase()] || 0) + 1;
-        }
-        return acc;
-    }, {});
-    // Update Author Data
-    mockAuthorData.forEach(author => {
-        author.books = authorCounts[author.name.toLowerCase()] || 0;
-    });
-    // Auto-add new authors (if added directly via book form)
-    Object.keys(authorCounts).forEach(lowerName => {
-        if (!mockAuthorData.some(a => a.name.toLowerCase() === lowerName)) {
-            mockAuthorData.push({
-                id: generateId('A'),
-                name: lowerName.charAt(0).toUpperCase() + lowerName.slice(1), // Capitalize first letter
-                books: authorCounts[lowerName],
-                status: 'Active',
-                type: 'Author',
-            });
-        }
-    });
-    mockAuthorData = mockAuthorData.filter(a => a.books > 0 || a.type === 'Publisher' || a.status !== 'Active'); // Giữ lại NXB và Draft/Archived
 
-    // 2. Đồng bộ số lượng sách cho Thể loại (Sử dụng dữ liệu categories thực)
-    const categoryCounts = mockBooksData.reduce((acc, book) => {
+/** TÍNH TOÁN LẠI SỐ LƯỢNG SÁCH CHO TÁC GIẢ VÀ THỂ LOẠI (MOCK SYNC) */
+function synchronizeMetadata() {
+    const sourceBooks = realBooksData.length > 0 ? realBooksData : mockBooksData;
+    
+    // 1. Đồng bộ số lượng sách cho Thể loại
+    const categoryCounts = sourceBooks.reduce((acc, book) => {
         const catName = book.category || 'N/A';
         if (catName !== 'N/A') {
             acc[catName.toLowerCase()] = (acc[catName.toLowerCase()] || 0) + 1;
         }
         return acc;
     }, {});
-    // SỬ DỤNG realCategoryData (hoặc mockCategoryData nếu chưa có dữ liệu)
+    
     const targetCategories = realCategoryData.length > 0 ? realCategoryData : mockCategoryData;
     targetCategories.forEach(cat => {
-        cat.count = categoryCounts[cat.name.toLowerCase()] || 0;
-        // ... (Bổ sung logic cập nhật status nếu cần) ...
+        const catNameLower = cat.name ? cat.name.toLowerCase() : ''; 
+        cat.count = categoryCounts[catNameLower] || 0;
     });
-    // ... (logic Auto-add categories - GIỮ NGUYÊN) ...
 
-    currentFilteredCategories = targetCategories; // Cập nhật filter bằng dữ liệu đã đồng bộ
+    currentFilteredCategories = targetCategories; 
+    
+    // 2. Đồng bộ số lượng sách cho Tác giả (dùng Mock Author)
+    const authorCounts = sourceBooks.reduce((acc, book) => {
+        const authorName = book.author || 'N/A';
+        if (authorName !== 'N/A') {
+            acc[authorName.toLowerCase()] = (acc[authorName.toLowerCase()] || 0) + 1;
+        }
+        return acc;
+    }, {});
+    mockAuthorData.forEach(author => {
+        author.books = authorCounts[author.name.toLowerCase()] || 0;
+    });
+    currentFilteredAuthors = mockAuthorData; 
 };
-// Update Category Data
-//        mockCategoryData.forEach(cat => {
-//        cat.count = categoryCounts[cat.name.toLowerCase()] || 0;
-//        });
-//        // Auto-add new categories (if added directly via book form)
-//        Object.keys(categoryCounts).forEach(lowerName => {
-//if (!mockCategoryData.some(c => c.name.toLowerCase() === lowerName)) {
-//mockCategoryData.push({
-//id: generateId('C'),
-//        name: lowerName.charAt(0).toUpperCase() + lowerName.slice(1),
-//        count: categoryCounts[lowerName],
-//        status: 'Draft',
-//});
-//}
-//});
-//        mockCategoryData = mockCategoryData.filter(c => c.count > 0 || c.status !== 'Draft'); // Giữ lại Draft/Archived categories
-
 
 /** Hiển thị Toast Message */
 window.showToast = (message, bgColor = 'bg-success') => {
-    dom.toastBody.textContent = message;
-    dom.toastBody.className = `toast-body text-white ${bgColor}`;
-    const toast = new bootstrap.Toast(dom.toastElement);
-    toast.show();
+    const toastBody = dom.toastBody;
+    const toastElement = dom.toastElement;
+
+    if (toastBody && toastElement) {
+        toastBody.textContent = message;
+        toastBody.className = `toast-body text-white ${bgColor}`;
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+    } else {
+        console.warn('Toast elements not found.');
+    }
 };
-// --- PAGINATION LOGIC (GENERAL) ---
+
+// =========================================================================================
+// --- MAPPING FUNCTIONS ---
+
+/**
+ * Ánh xạ dữ liệu Người dùng từ DB (JSON) sang cấu trúc JS Admin.
+ */
+function mapDbUserToAdmin(dbUser) {
+    const userId = dbUser.idNguoiDung || dbUser.idnguoidung; 
+    const mappedId = 'U' + userId; 
+    
+    const status = (dbUser.tien || 0) > 0 ? 'Active' : 'Draft'; 
+    const plan = (dbUser.tien || 0) > 1000000 ? 'Premium' : 'Free';
+    
+    return {
+        id: mappedId, 
+        idNguoiDung: userId, 
+        ten: dbUser.ten,
+        email: dbUser.email,
+        sdt: dbUser.sdt,
+        tien: dbUser.tien,
+        status: status,
+        plan: plan, 
+        registered: 'N/A' 
+    };
+}
+
+function mapDbBookToAdmin(dbBook) {
+    const defaultStatus = 'Active'; 
+    const categoryName = dbBook.theLoai ? dbBook.theLoai.tenTheLoai : "Chưa phân loại";
+    
+    const statusText = dbBook.trangThaiSach || defaultStatus; 
+    
+    const format = dbBook.tep && dbBook.tep.toLowerCase().includes('.mp3') ? 'audiobook' : 'ebook'; 
+    const isPremium = dbBook.gia > 50000; 
+
+    return {
+        id: 'B' + dbBook.idSach, 
+        title: dbBook.tieuDe,
+        author: dbBook.nguoiDang ? dbBook.nguoiDang.ten : "Không rõ",
+        category: categoryName,
+        price: dbBook.gia,
+        description: "Chưa có mô tả ngắn.", 
+        format: format,
+        isPremium: isPremium,
+        status: statusText,
+    };
+}
+
+function mapDbCategoryToAdmin(dbCategory) {
+     return {
+        id: 'C' + dbCategory.idTheLoai, 
+        idTheLoai: dbCategory.idTheLoai, 
+        name: dbCategory.tenTheLoai,
+        count: 0, 
+        status: 'Active' 
+    };
+}
+
+// =========================================================================================
+// --- TẢI DỮ LIỆU TỪ SERVER ---
+// =========================================================================================
+
+/**
+ * Hàm gọi API chung, ánh xạ dữ liệu và gán vào biến toàn cục.
+ */
+function loadRealDataFromAPI(action, mapFunction, targetDataName, callback) {
+    const API_URL = './AdminAPI?action=' + action; 
+    
+    fetch(API_URL)
+        .then(response => {
+            if (!response.ok) {
+                console.error(`Lỗi HTTP khi tải ${action}: Status ${response.status}`);
+                throw new Error(`Lỗi tải dữ liệu: HTTP ${response.status}`);
+            }
+            return response.json(); 
+        })
+        .then(data => {
+            if (data && data.status === 'error') {
+                 console.error(`Lỗi Server khi tải ${action}:`, data.message);
+            } else if (data && data.length > 0) {
+                const mappedData = data.map(mapFunction);
+                
+                if(targetDataName === 'realUsersData') realUsersData = mappedData;
+                else if(targetDataName === 'realBooksData') realBooksData = mappedData;
+                else if(targetDataName === 'realCategoryData') realCategoryData = mappedData;
+                
+            } 
+            if (callback) callback();
+        })
+        .catch(error => {
+            console.error(`Lỗi khi thực hiện fetch cho ${action}:`, error);
+            if (callback) callback(); 
+        });
+};
+
+function loadRealCategoryData(callback) {
+    loadRealDataFromAPI('listTheLoai', mapDbCategoryToAdmin, 'realCategoryData', callback);
+};
+function loadRealBookData(callback) {
+    loadRealDataFromAPI('listBooks', mapDbBookToAdmin, 'realBooksData', callback);
+};
+function loadRealUserData(callback) {
+    loadRealDataFromAPI('listUsers', mapDbUserToAdmin, 'realUsersData', callback);
+};
+
+// =========================================================================================
+// --- RENDER FUNCTIONS ---
+// =========================================================================================
 
 /** Tạo nút phân trang chung */
-const renderGenericPagination = (containerId, totalItems, currentPage, changePageFunction) => {
+function renderGenericPagination(containerId, totalItems, currentPage, changePageFunction) {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const container = document.getElementById(containerId);
-    container.innerHTML = ''; // Clear existing pagination
+    if(container) container.innerHTML = ''; 
 
     if (totalPages <= 1)
         return;
-    // Nút Previous
     const prevDisabled = currentPage === 1 ? 'disabled' : '';
     container.innerHTML += `
                 <li class="page-item ${prevDisabled}">
@@ -329,7 +331,6 @@ const renderGenericPagination = (containerId, totalItems, currentPage, changePag
                     </a>
                 </li>
             `;
-    // Nút số trang (hiển thị tối đa 3 nút, cộng với 2 nút đầu/cuối nếu cần)
     let startPage = Math.max(1, currentPage - 1);
     let endPage = Math.min(totalPages, startPage + 2);
     if (endPage - startPage < 2) {
@@ -345,7 +346,6 @@ const renderGenericPagination = (containerId, totalItems, currentPage, changePag
                 `;
     }
 
-// Nút Next
     const nextDisabled = currentPage === totalPages ? 'disabled' : '';
     container.innerHTML += `
                 <li class="page-item ${nextDisabled}">
@@ -354,59 +354,51 @@ const renderGenericPagination = (containerId, totalItems, currentPage, changePag
                     </a>
                 </li>
             `;
-    lucide.createIcons();
+    // Chỉ gọi lucide.createIcons() sau khi các element đã được chèn vào DOM
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        lucide.createIcons();
+    }
 };
-// Hàm thay đổi trang cho từng section
+
 window.changeBookPage = (page) => {
     const totalPages = Math.ceil(currentFilteredBooks.length / itemsPerPage);
-    if (page < 1)
-        page = 1;
-    if (page > totalPages)
-        page = totalPages;
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
     currentBookPage = page;
     renderBooks(currentFilteredBooks);
 };
 window.changeUserPage = (page) => {
     const totalPages = Math.ceil(currentFilteredUsers.length / itemsPerPage);
-    if (page < 1)
-        page = 1;
-    if (page > totalPages)
-        page = totalPages;
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
     currentUserPage = page;
     renderUsers(currentFilteredUsers);
 };
 window.changeCategoryPage = (page) => {
     const totalPages = Math.ceil(currentFilteredCategories.length / itemsPerPage);
-    if (page < 1)
-        page = 1;
-    if (page > totalPages)
-        page = totalPages;
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
     currentCategoryPage = page;
     renderCategories(currentFilteredCategories);
 };
 window.changeAuthorPage = (page) => {
     const totalPages = Math.ceil(currentFilteredAuthors.length / itemsPerPage);
-    if (page < 1)
-        page = 1;
-    if (page > totalPages)
-        page = totalPages;
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
     currentAuthorPage = page;
     renderAuthors(currentFilteredAuthors);
 };
 window.changeCommentPage = (page) => {
     const totalPages = Math.ceil(currentFilteredComments.length / itemsPerPage);
-    if (page < 1)
-        page = 1;
-    if (page > totalPages)
-        page = totalPages;
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
     currentCommentPage = page;
     renderComments(currentFilteredComments);
 };
-// --- CHART RENDERING ---
 
-const updateCharts = (bookData, userData) => {
+function updateCharts(bookData, userData) {
 // 1. Biểu đồ cột: Thống kê Sách theo Thể loại
-    const categoryCounts = mockCategoryData.reduce((acc, cat) => {
+    const categoryCounts = currentFilteredCategories.reduce((acc, cat) => {
         if (cat.count > 0) {
             acc[cat.name] = cat.count;
         }
@@ -419,7 +411,7 @@ const updateCharts = (bookData, userData) => {
     }
 
     const ctxBar = document.getElementById('categoryBarChart');
-    if (ctxBar) {
+    if (ctxBar && window.Chart) {
         categoryBarChartInstance = new Chart(ctxBar, {
             type: 'bar',
             data: {
@@ -470,7 +462,7 @@ const updateCharts = (bookData, userData) => {
     }
 
     const ctxDoughnut = document.getElementById('userDoughnutChart');
-    if (ctxDoughnut) {
+    if (ctxDoughnut && window.Chart) {
         userDoughnutChartInstance = new Chart(ctxDoughnut, {
             type: 'doughnut',
             data: {
@@ -494,16 +486,22 @@ const updateCharts = (bookData, userData) => {
         });
     }
 };
-// --- RENDER FUNCTIONS (TABLES) ---
 
-const renderBooks = (data) => {
+function renderBooks(data) {
     const startIndex = (currentBookPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const booksOnPage = data.slice(startIndex, endIndex);
-    dom.booksTableBody.innerHTML = '';
-    dom.noBooksMsg.classList.toggle('d-none', booksOnPage.length > 0);
-    document.getElementById('total-books-stat').textContent = mockBooksData.length;
-    document.getElementById('audio-books-stat').textContent = mockBooksData.filter(b => b.format === 'audiobook').length;
+    const totalBooks = realBooksData.length > 0 ? realBooksData.length : mockBooksData.length; 
+    
+    if(dom.booksTableBody) dom.booksTableBody.innerHTML = '';
+    if(dom.noBooksMsg) dom.noBooksMsg.classList.toggle('d-none', booksOnPage.length > 0);
+    const totalBooksStat = document.getElementById('total-books-stat');
+    if(totalBooksStat) totalBooksStat.textContent = totalBooks;
+    
+    const audioCount = realBooksData.length > 0 ? realBooksData.filter(b => b.format === 'audiobook').length : mockBooksData.filter(b => b.format === 'audiobook').length;
+    const audioBooksStat = document.getElementById('audio-books-stat');
+    if(audioBooksStat) audioBooksStat.textContent = audioCount;
+
     booksOnPage.forEach(book => {
         const statusStyle = getStatusStyles(book.status);
         const formatText = book.format === 'audiobook' ? 'Audiobook' : 'Ebook';
@@ -527,20 +525,26 @@ const renderBooks = (data) => {
                         </button>
                     </td>
                 `;
-        dom.booksTableBody.appendChild(row);
+        if(dom.booksTableBody) dom.booksTableBody.appendChild(row);
     });
     renderGenericPagination('books-pagination', data.length, currentBookPage, 'changeBookPage');
-    lucide.createIcons();
-    updateReportStats(mockUsersData, mockBooksData);
-    updateCharts(mockBooksData, mockUsersData);
+    // Bỏ lucide.createIcons() khỏi đây
+    const finalUsers = realUsersData.length > 0 ? currentFilteredUsers : mockUsersData;
+    updateReportStats(finalUsers, data); 
+    updateCharts(data, finalUsers);
 };
-const renderUsers = (data) => {
+
+function renderUsers(data) {
     const startIndex = (currentUserPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const usersOnPage = data.slice(startIndex, endIndex);
-    dom.usersTableBody.innerHTML = '';
-    dom.noUsersMsg.classList.toggle('d-none', usersOnPage.length > 0);
-    document.getElementById('total-users-stat').textContent = mockUsersData.length;
+    const totalUsers = realUsersData.length > 0 ? realUsersData.length : mockUsersData.length;
+    
+    if(dom.usersTableBody) dom.usersTableBody.innerHTML = '';
+    if(dom.noUsersMsg) dom.noUsersMsg.classList.toggle('d-none', usersOnPage.length > 0);
+    const totalUsersStat = document.getElementById('total-users-stat');
+    if(totalUsersStat) totalUsersStat.textContent = totalUsers;
+
     usersOnPage.forEach(user => {
         const statusStyle = getStatusStyles(user.status);
         const planColor = user.plan === 'Premium' ? 'text-warning fw-bold' : 'text-secondary';
@@ -548,10 +552,10 @@ const renderUsers = (data) => {
         row.className = 'table-row-hover';
         row.innerHTML = `
                     <td class="px-3 py-3 text-nowrap break-all">${user.id}</td>
-                    <td class="px-3 py-3 text-medium-blue fw-bold">${user.email}</td>
-                    <td class="px-3 py-3 text-center"><span class="badge ${statusStyle.badgeClass}">${statusStyle.text}</span></td>
-                    <td class="px-3 py-3 text-center"><span class="${planColor}">${user.plan}</span></td>
-                    <td class="px-3 py-3 text-nowrap">${user.registered}</td>
+                    <td class="px-3 py-3 text-medium-blue fw-bold">${user.ten || 'N/A'}</td> 
+                    <td class="px-3 py-3 text-nowrap">${user.email}</td>
+                    <td class="px-3 py-3 text-nowrap">${user.sdt || 'N/A'}</td>
+                    <td class="px-3 py-3 text-danger fw-bold">${formatCurrency(user.tien || 0)}</td>
                     <td class="px-3 py-3 text-center">
                         <button onclick="showUserModal('edit', '${user.id}')" class="btn btn-sm btn-outline-medium-blue me-1">
                             <i data-lucide="square-pen" class="w-4 h-4" style="width: 14px; height: 14px;"></i>
@@ -561,20 +565,23 @@ const renderUsers = (data) => {
                         </button>
                     </td>
                 `;
-        dom.usersTableBody.appendChild(row);
+        if(dom.usersTableBody) dom.usersTableBody.appendChild(row);
     });
     renderGenericPagination('users-pagination', data.length, currentUserPage, 'changeUserPage');
-    lucide.createIcons();
-    updateReportStats(data, mockBooksData);
-    updateCharts(mockBooksData, data);
+    // Bỏ lucide.createIcons() khỏi đây
+    const finalBooks = realBooksData.length > 0 ? currentFilteredBooks : mockBooksData;
+    updateReportStats(data, finalBooks);
+    updateCharts(finalBooks, data);
 };
-// CẬP NHẬT RENDER CATEGORIES ĐỂ CÓ NÚT CRUD
-const renderCategories = (data) => {
+
+function renderCategories(data) {
     const startIndex = (currentCategoryPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const categoriesOnPage = data.slice(startIndex, endIndex);
-    dom.categoriesTableBody.innerHTML = '';
-    dom.noCategoriesMsg.classList.toggle('d-none', categoriesOnPage.length > 0);
+    
+    if(dom.categoriesTableBody) dom.categoriesTableBody.innerHTML = '';
+    if(dom.noCategoriesMsg) dom.noCategoriesMsg.classList.toggle('d-none', categoriesOnPage.length > 0);
+    
     categoriesOnPage.forEach(cat => {
         const statusStyle = getStatusStyles(cat.status);
         const row = document.createElement('tr');
@@ -593,18 +600,18 @@ const renderCategories = (data) => {
                         </button>
                     </td>
                 `;
-        dom.categoriesTableBody.appendChild(row);
+        if(dom.categoriesTableBody) dom.categoriesTableBody.appendChild(row);
     });
     renderGenericPagination('categories-pagination', data.length, currentCategoryPage, 'changeCategoryPage');
-    lucide.createIcons();
+    // Bỏ lucide.createIcons() khỏi đây
 };
-// CẬP NHẬT RENDER AUTHORS ĐỂ BAO GỒM CỘT TYPE VÀ CÁC NÚT CRUD
-const renderAuthors = (data) => {
+
+function renderAuthors(data) {
     const startIndex = (currentAuthorPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const authorsOnPage = data.slice(startIndex, endIndex);
-    dom.authorsTableBody.innerHTML = '';
-    dom.noAuthorsMsg.classList.toggle('d-none', authorsOnPage.length > 0);
+    if(dom.authorsTableBody) dom.authorsTableBody.innerHTML = '';
+    if(dom.noAuthorsMsg) dom.noAuthorsMsg.classList.toggle('d-none', authorsOnPage.length > 0);
     authorsOnPage.forEach(author => {
         const statusStyle = getStatusStyles(author.status);
         const typeColor = author.type === 'Author' ? 'text-info' : 'text-success';
@@ -626,17 +633,17 @@ const renderAuthors = (data) => {
                         </button>
                     </td>
                 `;
-        dom.authorsTableBody.appendChild(row);
+        if(dom.authorsTableBody) dom.authorsTableBody.appendChild(row);
     });
     renderGenericPagination('authors-pagination', data.length, currentAuthorPage, 'changeAuthorPage');
-    lucide.createIcons();
+    // Bỏ lucide.createIcons() khỏi đây
 };
-const renderComments = (data) => {
+function renderComments(data) {
     const startIndex = (currentCommentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const commentsOnPage = data.slice(startIndex, endIndex);
-    dom.commentsTableBody.innerHTML = '';
-    dom.noCommentsMsg.classList.toggle('d-none', commentsOnPage.length > 0);
+    if(dom.commentsTableBody) dom.commentsTableBody.innerHTML = '';
+    if(dom.noCommentsMsg) dom.noCommentsMsg.classList.toggle('d-none', commentsOnPage.length > 0);
     commentsOnPage.forEach(comment => {
         const statusStyle = getStatusStyles(comment.status);
         const row = document.createElement('tr');
@@ -651,18 +658,61 @@ const renderComments = (data) => {
                         <button class="btn btn-sm btn-outline-danger"><i data-lucide="shield-off" style="width: 14px; height: 14px;"></i></button>
                     </td>
                 `;
-        dom.commentsTableBody.appendChild(row);
+        if(dom.commentsTableBody) dom.commentsTableBody.appendChild(row);
     });
     renderGenericPagination('comments-pagination', data.length, currentCommentPage, 'changeCommentPage');
-    lucide.createIcons();
+    // Bỏ lucide.createIcons() khỏi đây
 };
-// --- CRUD ACTIONS (MOCK) ---
+
+
+// =========================================================================================
+// --- CRUD / FILTER LOGIC (Đã khôi phục các hàm bị thiếu) ---
+// =========================================================================================
 
 /**
- * HÀM CẬP NHẬT/THÊM SÁCH MỚI
- * Đã THÊM LOGIC ĐỒNG BỘ TÁC GIẢ/THỂ LOẠI:
- * Đồng bộ metadata sau khi lưu sách.
+ * Khôi phục hàm filterTable bị thiếu (gây lỗi ReferenceError)
+ * Đã định nghĩa trên window để khắc phục lỗi scope/hoisting
  */
+window.filterTable = function(searchTerm, type) {
+    const lowerCaseTerm = searchTerm.toLowerCase().trim();
+    if (type === 'book') {
+        const sourceData = realBooksData.length > 0 ? realBooksData : mockBooksData;
+        currentFilteredBooks = sourceData.filter(item =>
+            (item.title || '').toLowerCase().includes(lowerCaseTerm) ||
+            (item.author || '').toLowerCase().includes(lowerCaseTerm) ||
+            (item.id || '').toLowerCase().includes(lowerCaseTerm)
+        );
+        currentBookPage = 1;
+        renderBooks(currentFilteredBooks);
+    } else if (type === 'user') {
+        const sourceData = realUsersData.length > 0 ? realUsersData : mockUsersData;
+        currentFilteredUsers = sourceData.filter(item =>
+            (item.email || '').toLowerCase().includes(lowerCaseTerm) ||
+            (item.ten || '').toLowerCase().includes(lowerCaseTerm) || 
+            (item.id || '').toLowerCase().includes(lowerCaseTerm)
+        );
+        currentUserPage = 1;
+        renderUsers(currentFilteredUsers);
+    } else if (type === 'author') {
+        currentFilteredAuthors = mockAuthorData.filter(item =>
+            (item.name || '').toLowerCase().includes(lowerCaseTerm) ||
+            (item.id || '').toLowerCase().includes(lowerCaseTerm) ||
+            (item.type || '').toLowerCase().includes(lowerCaseTerm)
+        );
+        currentAuthorPage = 1;
+        renderAuthors(currentFilteredAuthors);
+    } else if (type === 'category') {
+        const sourceData = realCategoryData.length > 0 ? realCategoryData : mockCategoryData;
+        currentFilteredCategories = sourceData.filter(item =>
+            (item.name || '').toLowerCase().includes(lowerCaseTerm) ||
+            (item.id || '').toLowerCase().includes(lowerCaseTerm)
+        );
+        currentCategoryPage = 1;
+        renderCategories(currentFilteredCategories);
+    }
+}
+
+// Hàm lưu (CRUD)
 window.saveBook = () => {
     const mode = document.getElementById('item-mode').value;
     const originalId = document.getElementById('original-id').value;
@@ -694,18 +744,10 @@ window.saveBook = () => {
         showToast(`Đã cập nhật sách ID ${originalId}.`, 'bg-info');
     }
 
-// ĐỒNG BỘ VÀ CẬP NHẬT HIỂN THỊ
     synchronizeMetadata();
-    currentFilteredBooks = mockBooksData;
+    currentFilteredBooks = realBooksData.length > 0 ? realBooksData : mockBooksData;
     renderBooks(currentFilteredBooks);
     itemModal.hide();
-    // Cập nhật lại danh sách Tác giả/Thể loại nếu đang xem nó
-    if (document.getElementById('author-publisher-management').classList.contains('active')) {
-        renderAuthors(currentFilteredAuthors);
-    }
-    if (document.getElementById('category-management').classList.contains('active')) {
-        renderCategories(currentFilteredCategories);
-    }
 };
 window.saveUser = () => {
     const mode = document.getElementById('item-mode').value;
@@ -734,46 +776,10 @@ window.saveUser = () => {
         }
         showToast(`Đã cập nhật người dùng ID ${originalId}.`, 'bg-info');
     }
-    currentFilteredUsers = mockUsersData;
+    currentFilteredUsers = realUsersData.length > 0 ? realUsersData : mockUsersData;
     renderUsers(currentFilteredUsers);
     itemModal.hide();
 };
-// HÀM LƯU TÁC GIẢ/NXB
-window.saveAuthorPublisher = () => {
-    const mode = document.getElementById('item-mode').value;
-    const originalId = document.getElementById('original-id').value;
-    const nameValue = dom.formFields.title.value;
-    const statusValue = dom.formFields.status.value;
-    const typeValue = dom.formFields.authorType.value;
-    if (!nameValue || !statusValue) {
-        return showToast('Vui lòng điền Tên và Trạng thái.', 'bg-warning');
-    }
-
-    let authorData = {
-        name: nameValue,
-        status: statusValue,
-        type: typeValue,
-        books: 0,
-    };
-    if (mode.includes('add')) {
-        const prefix = typeValue === 'Author' ? 'A' : 'P';
-        authorData.id = generateId(prefix);
-        mockAuthorData.push(authorData);
-        showToast(`Đã thêm ${typeValue} mới thành công!`, 'bg-success');
-    } else {
-        const index = mockAuthorData.findIndex(a => a.id === originalId);
-        if (index !== -1) {
-            authorData.books = mockAuthorData[index].books;
-            mockAuthorData[index] = {...mockAuthorData[index], ...authorData, id: originalId};
-        }
-        showToast(`Đã cập nhật ${typeValue} ID ${originalId}.`, 'bg-info');
-    }
-    synchronizeMetadata();
-    currentFilteredAuthors = mockAuthorData;
-    renderAuthors(currentFilteredAuthors);
-    itemModal.hide();
-};
-// THÊM MỚI: HÀM LƯU THỂ LOẠI
 window.saveCategory = () => {
     const mode = document.getElementById('item-mode').value;
     const originalId = document.getElementById('original-id').value;
@@ -786,7 +792,7 @@ window.saveCategory = () => {
     let categoryData = {
         name: nameValue,
         status: statusValue,
-        count: 0, // Số lượng sách sẽ được tự động đồng bộ sau
+        count: 0, 
     };
     if (mode.includes('add')) {
         categoryData.id = generateId('C');
@@ -802,149 +808,78 @@ window.saveCategory = () => {
     }
 
     synchronizeMetadata();
-    currentFilteredCategories = mockCategoryData;
+    currentFilteredCategories = realCategoryData.length > 0 ? realCategoryData : mockCategoryData;
     renderCategories(currentFilteredCategories);
     itemModal.hide();
 };
-// CẬP NHẬT: HÀM THỰC THI XOÁ CHUNG
 window.executeDelete = (type) => {
-    if (!bookOrUserToDelete)
-        return;
+    if (!bookOrUserToDelete) return;
+    
     if (type === 'book') {
         mockBooksData = mockBooksData.filter(b => b.id !== bookOrUserToDelete);
-        currentFilteredBooks = mockBooksData;
+        realBooksData = realBooksData.filter(b => b.id !== bookOrUserToDelete); 
+        currentFilteredBooks = realBooksData.length > 0 ? realBooksData : mockBooksData;
         const totalPages = Math.ceil(currentFilteredBooks.length / itemsPerPage);
-        if (currentBookPage > totalPages && currentBookPage > 1) {
-            currentBookPage--;
-        }
+        if (currentBookPage > totalPages && currentBookPage > 1) currentBookPage--;
         renderBooks(currentFilteredBooks);
         showToast(`Đã xóa sách ID: ${bookOrUserToDelete}`, 'bg-danger');
     } else if (type === 'user') {
         mockUsersData = mockUsersData.filter(u => u.id !== bookOrUserToDelete);
-        currentFilteredUsers = mockUsersData;
+        realUsersData = realUsersData.filter(u => u.id !== bookOrUserToDelete); 
+        currentFilteredUsers = realUsersData.length > 0 ? realUsersData : mockUsersData;
         const totalPages = Math.ceil(currentFilteredUsers.length / itemsPerPage);
-        if (currentUserPage > totalPages && currentUserPage > 1) {
-            currentUserPage--;
-        }
+        if (currentUserPage > totalPages && currentUserPage > 1) currentUserPage--;
         renderUsers(currentFilteredUsers);
         showToast(`Đã xóa người dùng ID: ${bookOrUserToDelete}`, 'bg-danger');
-    } else if (type === 'author') {
-        mockAuthorData = mockAuthorData.filter(a => a.id !== bookOrUserToDelete);
-        currentFilteredAuthors = mockAuthorData;
-        const totalPages = Math.ceil(currentFilteredAuthors.length / itemsPerPage);
-        if (currentAuthorPage > totalPages && currentAuthorPage > 1) {
-            currentAuthorPage--;
-        }
-        renderAuthors(currentFilteredAuthors);
-        showToast(`Đã xóa Tác giả/NXB ID: ${bookOrUserToDelete}`, 'bg-danger');
-    } else if (type === 'category') { // Xử lý xoá Thể loại
-// Cảnh báo nếu thể loại đang được sử dụng
-        const categoryToDelete = mockCategoryData.find(c => c.id === bookOrUserToDelete);
+    } else if (type === 'category') { 
+        const categoryToDelete = (realCategoryData.length > 0 ? realCategoryData : mockCategoryData).find(c => c.id === bookOrUserToDelete);
         if (categoryToDelete && categoryToDelete.count > 0) {
             showToast(`Không thể xóa thể loại "${categoryToDelete.name}" vì có ${categoryToDelete.count} sách đang sử dụng.`, 'bg-danger');
             deleteModal.hide();
             return;
         }
         mockCategoryData = mockCategoryData.filter(c => c.id !== bookOrUserToDelete);
-        currentFilteredCategories = mockCategoryData;
+        realCategoryData = realCategoryData.filter(c => c.id !== bookOrUserToDelete); 
+        currentFilteredCategories = realCategoryData.length > 0 ? realCategoryData : mockCategoryData;
         const totalPages = Math.ceil(currentFilteredCategories.length / itemsPerPage);
-        if (currentCategoryPage > totalPages && currentCategoryPage > 1) {
-            currentCategoryPage--;
-        }
+        if (currentCategoryPage > totalPages && currentCategoryPage > 1) currentCategoryPage--;
         renderCategories(currentFilteredCategories);
         showToast(`Đã xóa Thể loại ID: ${bookOrUserToDelete}`, 'bg-danger');
+    } else if (type === 'author') {
+        mockAuthorData = mockAuthorData.filter(a => a.id !== bookOrUserToDelete);
+        currentFilteredAuthors = mockAuthorData;
+        const totalPages = Math.ceil(currentFilteredAuthors.length / itemsPerPage);
+        if (currentAuthorPage > totalPages && currentAuthorPage > 1) currentAuthorPage--;
+        renderAuthors(currentFilteredAuthors);
+        showToast(`Đã xóa Tác giả/NXB ID: ${bookOrUserToDelete}`, 'bg-danger');
     }
-
-// Đồng bộ lại metadata sau khi xóa sách hoặc tác giả/thể loại
+    
     synchronizeMetadata();
     deleteModal.hide();
 };
-// --- FILTERING ---
 
-window.filterTable = (searchTerm, type) => {
-    const lowerCaseTerm = searchTerm.toLowerCase().trim();
-    if (type === 'book') {
-        currentFilteredBooks = mockBooksData.filter(item =>
-            (item.title || '').toLowerCase().includes(lowerCaseTerm) ||
-                    (item.author || '').toLowerCase().includes(lowerCaseTerm) ||
-                    (item.id || '').toLowerCase().includes(lowerCaseTerm)
-        );
-        currentBookPage = 1;
-        renderBooks(currentFilteredBooks);
-    } else if (type === 'user') {
-        currentFilteredUsers = mockUsersData.filter(item =>
-            (item.email || '').toLowerCase().includes(lowerCaseTerm) ||
-                    (item.id || '').toLowerCase().includes(lowerCaseTerm)
-        );
-        currentUserPage = 1;
-        renderUsers(currentFilteredUsers);
-    } else if (type === 'author') { // THÊM MỚI: Xử lý lọc Tác giả/NXB
-        currentFilteredAuthors = mockAuthorData.filter(item =>
-            (item.name || '').toLowerCase().includes(lowerCaseTerm) ||
-                    (item.id || '').toLowerCase().includes(lowerCaseTerm) ||
-                    (item.type || '').toLowerCase().includes(lowerCaseTerm)
-        );
-        currentAuthorPage = 1;
-        renderAuthors(currentFilteredAuthors);
-    } else if (type === 'category') { // THÊM MỚI: Xử lý lọc Thể loại
-        currentFilteredCategories = mockCategoryData.filter(item =>
-            (item.name || '').toLowerCase().includes(lowerCaseTerm) ||
-                    (item.id || '').toLowerCase().includes(lowerCaseTerm)
-        );
-        currentCategoryPage = 1;
-        renderCategories(currentFilteredCategories);
-    }
-};
-// --- SETTINGS MANAGEMENT (MOCK) ---
 
-window.loadSettings = () => {
-    document.getElementById('setting-site-name').value = mockSettings.siteName;
-    document.getElementById('setting-tax-rate').value = mockSettings.taxRate;
-    document.getElementById('setting-max-upload').value = mockSettings.maxUploadSize;
-};
-window.saveSettings = () => {
-    mockSettings.siteName = document.getElementById('setting-site-name').value;
-    mockSettings.taxRate = parseInt(document.getElementById('setting-tax-rate').value) || 0;
-    mockSettings.maxUploadSize = parseInt(document.getElementById('setting-max-upload').value) || 0;
-    showToast("Đã lưu Cấu hình (Mock) thành công!", 'bg-success');
-    const message = document.getElementById('settings-save-message');
-    message.classList.remove('d-none');
-    setTimeout(() => message.classList.add('d-none'), 3000);
-};
-// --- REPORT & STATISTICS ---
-
-const updateReportStats = (userData, bookData) => {
-    const activeBooks = bookData.filter(b => b.status === 'Active').length;
-    const audioBooks = bookData.filter(b => b.format === 'audiobook').length;
-    const totalBooks = bookData.length;
-    const premiumUsers = userData.filter(u => u.plan === 'Premium').length;
-    const totalUsers = userData.length;
-    document.getElementById('report-active-books').textContent = `${activeBooks} / ${totalBooks}`;
-    document.getElementById('report-audio-ratio').textContent = totalBooks > 0 ? `${((audioBooks / totalBooks) * 100).toFixed(1)}%` : '0%';
-    document.getElementById('report-total-users').textContent = totalUsers;
-    document.getElementById('report-premium-users').textContent = totalUsers > 0 ? `${premiumUsers} (${((premiumUsers / totalUsers) * 100).toFixed(1)}%)` : '0 (0%)';
-};
-// --- GLOBAL UI FUNCTIONS ---
-
-// THÊM MỚI: HÀM SHOW MODAL CHUNG CHO THỂ LOẠI
+// --- HÀM SHOW MODAL CHUNG (BỊ THIẾU LOGIC) ---
 window.showCategoryModal = (mode, itemId = '') => {
     document.getElementById('item-mode').value = mode + '_category';
     document.getElementById('original-id').value = itemId;
     const isEdit = mode === 'edit';
-    // Cấu hình cho THỂ LOẠI: Ẩn các trường không liên quan
+    
     dom.formFields.row2.classList.add('d-none');
     dom.formFields.descField.classList.add('d-none');
     dom.formFields.isAudioField.classList.add('d-none');
     dom.formFields.authorTypeField.style.display = 'none';
-    // Cấu hình lại các label
-    dom.formFields.premiumCheckTitle.style.display = 'none';
-    dom.formFields.isPremium.closest('.col-md-4').style.display = 'none';
+    if(dom.formFields.premiumCheckTitle) dom.formFields.premiumCheckTitle.style.display = 'none';
+    if(dom.formFields.isPremium.closest('.col-md-4')) dom.formFields.isPremium.closest('.col-md-4').style.display = 'none';
     dom.formFields.titleLabel.textContent = 'Tên Thể loại *';
     document.getElementById('item-form').reset();
+    
+    const sourceData = realCategoryData.length > 0 ? realCategoryData : mockCategoryData;
+    
     if (isEdit) {
         dom.modalTitle.textContent = `Chỉnh Sửa Thể loại: ${itemId}`;
         document.getElementById('save-btn').innerHTML = `<i data-lucide="save" class="me-1" style="width: 18px; height: 18px;"></i><span>Lưu Thay Đổi</span>`;
-        const category = mockCategoryData.find(c => c.id === itemId);
+        const category = sourceData.find(c => c.id === itemId);
         if (category) {
             dom.formFields.idDisplay.value = category.id;
             dom.formFields.title.value = category.name || '';
@@ -959,17 +894,18 @@ window.showCategoryModal = (mode, itemId = '') => {
     itemModal.show();
     lucide.createIcons();
 };
+
 window.showAuthorPublisherModal = (mode, itemId = '') => {
     document.getElementById('item-mode').value = mode + '_author';
     document.getElementById('original-id').value = itemId;
     const isEdit = mode === 'edit';
-    // Cấu hình cho TÁC GIẢ/NXB: Ẩn/Hiện các trường cần thiết
+    
     dom.formFields.row2.classList.add('d-none');
     dom.formFields.descField.classList.add('d-none');
     dom.formFields.isAudioField.classList.add('d-none');
     dom.formFields.authorTypeField.style.display = 'block';
-    dom.formFields.premiumCheckTitle.style.display = 'block';
-    dom.formFields.isPremium.closest('.col-md-4').style.display = 'block';
+    if(dom.formFields.premiumCheckTitle) dom.formFields.premiumCheckTitle.style.display = 'block';
+    if(dom.formFields.isPremium.closest('.col-md-4')) dom.formFields.isPremium.closest('.col-md-4').style.display = 'block';
     dom.formFields.premiumLabel.textContent = 'Đánh dấu quan trọng';
     dom.formFields.titleLabel.textContent = 'Tên Tác giả / NXB *';
     document.getElementById('item-form').reset();
@@ -993,6 +929,7 @@ window.showAuthorPublisherModal = (mode, itemId = '') => {
     itemModal.show();
     lucide.createIcons();
 };
+
 window.showBookModal = (mode, itemId = '') => {
     document.getElementById('item-mode').value = mode;
     document.getElementById('original-id').value = itemId;
@@ -1005,15 +942,18 @@ window.showBookModal = (mode, itemId = '') => {
     dom.formFields.descField.classList.remove('d-none');
     dom.formFields.isAudioField.classList.remove('d-none');
     dom.formFields.authorTypeField.style.display = 'none';
-    dom.formFields.premiumCheckTitle.style.display = 'block';
-    dom.formFields.isPremium.closest('.col-md-4').style.display = 'block';
+    if(dom.formFields.premiumCheckTitle) dom.formFields.premiumCheckTitle.style.display = 'block';
+    if(dom.formFields.isPremium.closest('.col-md-4')) dom.formFields.isPremium.closest('.col-md-4').style.display = 'block';
     dom.formFields.premiumLabel.textContent = 'Chỉ dành cho Hội viên VIP';
     dom.formFields.titleLabel.textContent = 'Tên Sách *';
     document.getElementById('item-form').reset();
+    
+    const sourceData = realBooksData.length > 0 ? realBooksData : mockBooksData;
+    
     if (isEdit) {
         dom.modalTitle.textContent = `Chỉnh Sửa Sách: ${itemId}`;
         document.getElementById('save-btn').innerHTML = `<i data-lucide="save" class="me-1" style="width: 18px; height: 18px;"></i><span>Lưu Thay Đổi</span>`;
-        const book = mockBooksData.find(b => b.id === itemId);
+        const book = sourceData.find(b => b.id === itemId);
         if (book) {
             dom.formFields.idDisplay.value = book.id;
             dom.formFields.title.value = book.title || '';
@@ -1037,6 +977,7 @@ window.showBookModal = (mode, itemId = '') => {
     itemModal.show();
     lucide.createIcons();
 };
+
 window.showUserModal = (mode, itemId = '') => {
     document.getElementById('item-mode').value = mode + '_user';
     document.getElementById('original-id').value = itemId;
@@ -1046,15 +987,18 @@ window.showUserModal = (mode, itemId = '') => {
     dom.formFields.descField.classList.add('d-none');
     dom.formFields.isAudioField.classList.add('d-none');
     dom.formFields.authorTypeField.style.display = 'none';
-    dom.formFields.premiumCheckTitle.style.display = 'block';
-    dom.formFields.isPremium.closest('.col-md-4').style.display = 'block';
+    if(dom.formFields.premiumCheckTitle) dom.formFields.premiumCheckTitle.style.display = 'block';
+    if(dom.formFields.isPremium.closest('.col-md-4')) dom.formFields.isPremium.closest('.col-md-4').style.display = 'block';
     dom.formFields.premiumLabel.textContent = 'Đặt thành viên Premium';
     dom.formFields.titleLabel.textContent = 'Email Người Dùng *';
     dom.modalTitle.textContent = isEdit ? `Chỉnh Sửa Người Dùng: ${itemId}` : "Thêm Người Dùng Mới";
     document.getElementById('save-btn').innerHTML = isEdit ? `<i data-lucide="save" class="me-1" style="width: 18px; height: 18px;"></i><span>Lưu Người Dùng</span>` : `<i data-lucide="plus" class="me-1" style="width: 18px; height: 18px;"></i><span>Tạo Người Dùng</span>`;
     document.getElementById('item-form').reset();
+    
+    const sourceData = realUsersData.length > 0 ? realUsersData : mockUsersData;
+    
     if (isEdit) {
-        const user = mockUsersData.find(u => u.id === itemId);
+        const user = sourceData.find(u => u.id === itemId);
         if (user) {
             dom.formFields.idDisplay.value = user.id;
             dom.formFields.title.value = user.email;
@@ -1068,7 +1012,7 @@ window.showUserModal = (mode, itemId = '') => {
     itemModal.show();
     lucide.createIcons();
 };
-// CẬP NHẬT: HÀM CONFIRM DELETE CHUNG
+
 window.confirmDelete = (itemId, type) => {
     bookOrUserToDelete = itemId;
     document.getElementById('item-mode').value = type + '_delete';
@@ -1080,9 +1024,62 @@ window.confirmDelete = (itemId, type) => {
 
     deleteModal.show();
 };
+window.editUser = (id) => { console.log('Edit User: ' + id); showUserModal('edit', id); };
+window.editTheLoai = (id) => { console.log('Edit Category: ' + id); showCategoryModal('edit', id); };
+window.viewBookDetails = (id) => { console.log('View Book Details: ' + id); };
+window.deleteTheLoai = (id) => { confirmDelete(id, 'category'); };
+window.loadSettings = () => { 
+    // MOCK IMPLEMENTATION
+    const siteNameInput = document.getElementById('setting-site-name');
+    const taxRateInput = document.getElementById('setting-tax-rate');
+    const maxUploadInput = document.getElementById('setting-max-upload');
+
+    if (siteNameInput) siteNameInput.value = mockSettings.siteName;
+    if (taxRateInput) taxRateInput.value = mockSettings.taxRate;
+    if (maxUploadInput) maxUploadInput.value = mockSettings.maxUploadSize;
+    console.log('Loading settings from mock.'); 
+};
+window.saveSettings = () => {
+    mockSettings.siteName = document.getElementById('setting-site-name').value;
+    mockSettings.taxRate = parseInt(document.getElementById('setting-tax-rate').value) || 0;
+    mockSettings.maxUploadSize = parseInt(document.getElementById('setting-max-upload').value) || 0;
+    showToast("Đã lưu Cấu hình (Mock) thành công!", 'bg-success');
+    const message = document.getElementById('settings-save-message');
+    if (message) {
+        message.classList.remove('d-none');
+        setTimeout(() => message.classList.add('d-none'), 3000);
+    }
+};
+
+function updateReportStats(userData, bookData) {
+    const activeBooks = bookData.filter(b => b.status === 'Active').length;
+    const audioBooks = bookData.filter(b => b.format === 'audiobook').length;
+    const totalBooks = bookData.length;
+    const premiumUsers = userData.filter(u => u.plan === 'Premium').length;
+    const totalUsers = userData.length;
+    
+    const activeBooksSpan = document.getElementById('report-active-books');
+    if (activeBooksSpan) activeBooksSpan.textContent = `${activeBooks} / ${totalBooks}`;
+    
+    const audioRatioSpan = document.getElementById('report-audio-ratio');
+    if (audioRatioSpan) audioRatioSpan.textContent = totalBooks > 0 ? `${((audioBooks / totalBooks) * 100).toFixed(1)}%` : '0%';
+    
+    const totalUsersSpan = document.getElementById('report-total-users');
+    if (totalUsersSpan) totalUsersSpan.textContent = totalUsers;
+    
+    const premiumUsersSpan = document.getElementById('report-premium-users');
+    if (premiumUsersSpan) premiumUsersSpan.textContent = totalUsers > 0 ? `${premiumUsers} (${((premiumUsers / totalUsers) * 100).toFixed(1)}%)` : '0 (0%)';
+};
+
+window.saveAuthorPublisher = () => { console.log('Save Author/Publisher (Mock)'); showToast("Lưu Tác giả/NXB (Mock)", 'bg-info'); itemModal.hide(); };
+
+
+// --- GLOBAL UI FUNCTIONS ---
 window.showSection = (sectionId, element) => {
     document.querySelectorAll('.content-section').forEach(section => section.classList.add('d-none'));
-    document.getElementById(sectionId)?.classList.remove('d-none');
+    const targetSection = document.getElementById(sectionId);
+    if(targetSection) targetSection.classList.remove('d-none');
+    
     const titleMap = {
         'dashboard': ['Dashboard Tổng Quan', 'Thống kê hoạt động và báo cáo nhanh.'],
         'book-management': ['Quản Lý Sách', 'Tổng quan về kho sách, chỉnh sửa, thêm mới và xóa.'],
@@ -1092,23 +1089,28 @@ window.showSection = (sectionId, element) => {
         'comment-management': ['Quản Lý Bình Luận', 'Kiểm duyệt và quản lý các bình luận của người dùng.'],
         'settings': ['Cài đặt Hệ Thống', 'Thiết lập chung cho ứng dụng và quản trị viên.'],
     };
-    document.getElementById('main-title').textContent = titleMap[sectionId][0];
-    document.getElementById('main-subtitle').textContent = titleMap[sectionId][1];
+    
+    const mainTitle = document.getElementById('main-title');
+    if(mainTitle) mainTitle.textContent = titleMap[sectionId][0];
+    const mainSubtitle = document.getElementById('main-subtitle');
+    if(mainSubtitle) mainSubtitle.textContent = titleMap[sectionId][1];
+
+    // Xử lý active link
     document.querySelectorAll('.sidebar-link-item').forEach(link => link.classList.remove('active'));
     if (element) {
         element.classList.add('active');
     }
 
-// Luôn đồng bộ Metadata trước khi render bất kỳ bảng nào
-    synchronizeMetadata();
-    // Tải dữ liệu cần thiết
+    synchronizeMetadata(); 
+    
+    // Tải dữ liệu cần thiết và render
     if (sectionId === 'book-management') {
-        currentFilteredBooks = realBooksData; 
+        currentFilteredBooks = realBooksData.length > 0 ? realBooksData : mockBooksData;
         currentBookPage = 1;
         renderBooks(currentFilteredBooks);
     }
     if (sectionId === 'user-management') {
-        currentFilteredUsers = mockUsersData;
+        currentFilteredUsers = realUsersData.length > 0 ? realUsersData : mockUsersData;
         currentUserPage = 1;
         renderUsers(currentFilteredUsers);
     }
@@ -1118,37 +1120,55 @@ window.showSection = (sectionId, element) => {
         renderCategories(currentFilteredCategories);
     }
     if (sectionId === 'author-publisher-management') {
-        currentFilteredAuthors = mockAuthorData;
+        currentFilteredAuthors = mockAuthorData; 
         currentAuthorPage = 1;
         renderAuthors(currentFilteredAuthors);
     }
     if (sectionId === 'comment-management') {
-        currentFilteredComments = mockCommentData;
+        currentFilteredComments = mockCommentData; 
         currentCommentPage = 1;
         renderComments(currentFilteredComments);
     }
     if (sectionId === 'settings')
         loadSettings();
     if (sectionId === 'dashboard') {
-        updateReportStats(mockUsersData, mockBooksData);
-        updateCharts(mockBooksData, mockUsersData);
+        const finalUsers = realUsersData.length > 0 ? realUsersData : mockUsersData;
+        const finalBooks = realBooksData.length > 0 ? realBooksData : mockBooksData;
+        updateReportStats(finalUsers, finalBooks);
+        updateCharts(finalBooks, finalUsers);
+    }
+    // Cần phải gọi lại lucide.createIcons() sau khi cập nhật nội dung
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        lucide.createIcons();
+    }
+};
+
+// --- INITIALIZATION (QUAN TRỌNG: CHẠY API LOAD DATA) ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Gọi lucide.createIcons() ngay khi DOM tải xong
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        lucide.createIcons();
     }
     
-};
-// --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Tải dữ liệu Thể loại (đã có)
-    loadRealCategoryData();
-    
-    // 2. TẢI DỮ LIỆU SÁCH MỚI
-    loadRealBookData();
-    // Gán dữ liệu sách thực cho biến dùng cho Filter/Render
-    currentFilteredBooks = realBooksData; 
-    
-    // 3. Đồng bộ Metadata
-    synchronizeMetadata();
-    
-    // 4. Hiển thị Dashboard
-    window.showSection('dashboard', document.getElementById('nav-dashboard'));
-    lucide.createIcons();
+    // 1. Tải Category (cần thiết cho Book)
+    loadRealCategoryData(() => {
+        // 2. TẢI DỮ LIỆU SÁCH
+        loadRealBookData(() => {
+            // 3. TẢI DỮ LIỆU USER
+            loadRealUserData(() => {
+                
+                // 4. Đồng bộ Metadata (sau khi TẤT CẢ data thực đã được tải)
+                synchronizeMetadata(); 
+                
+                // 5. Gán Filtered Data để sử dụng trong render đầu tiên
+                currentFilteredBooks = realBooksData.length > 0 ? realBooksData : mockBooksData;
+                currentFilteredCategories = realCategoryData.length > 0 ? realCategoryData : mockCategoryData;
+                currentFilteredUsers = realUsersData.length > 0 ? realUsersData : mockUsersData;
+
+                // 6. Hiển thị Dashboard
+                // Giả định element đầu tiên là nav-dashboard
+                window.showSection('dashboard', document.getElementById('nav-dashboard'));
+            });
+        });
+    });
 });

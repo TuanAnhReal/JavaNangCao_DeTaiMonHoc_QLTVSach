@@ -112,7 +112,7 @@ public class LoginServlet extends HttpServlet {
 
                 // SỬ DỤNG equalsIgnoreCase() để đảm bảo hoạt động với 'admin', 'Admin', 'ADMIN'...
                 if ("Admin".equalsIgnoreCase(vaiTro)) {
-                    response.sendRedirect(request.getContextPath() + "/admin/home");
+                    response.sendRedirect(request.getContextPath() + "/admin");
                     return;
                 } else if ("user".equalsIgnoreCase(vaiTro)) {
                     response.sendRedirect(request.getContextPath() + "/trang-chu");
