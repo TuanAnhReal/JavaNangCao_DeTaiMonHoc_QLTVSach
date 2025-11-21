@@ -1,0 +1,124 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Oct 23, 2025, 3:38:41 PM
+    Author     : PC
+*/
+
+/* Thiết kế cao cấp hơn */
+:root {
+    --primary-color: #059669; /* Emerald 600 - Xanh lá đậm hơn */
+    --accent-color: #2563eb; /* Blue 600 */
+    --dark-bg: #111827; /* Gray 900 for Dark Menu */
+}
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* Nền xám nhạt */
+    color: #1f2937;
+}
+.bg-primary { background-color: var(--primary-color); }
+.text-primary { color: var(--primary-color); }
+.hover-primary:hover { background-color: #047857; /* Darker Green */ }
+
+/* Hiệu ứng thẻ sách 3D */
+.book-card-item {
+    transition: transform 0.3s, box-shadow 0.3s, scale 0.3s;
+}
+.book-card-item:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Custom styles for the Slider/Carousel */
+#hero-slider {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+.slider-item {
+    scroll-snap-align: start;
+    flex: 0 0 100%;
+}
+
+/* Mobile Menu Sliding */
+#mobile-menu {
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.5, 1);
+    transform: translateX(-100%);
+}
+#mobile-menu.open {
+    transform: translateX(0);
+}
+
+/* Active category style */
+.category-item.active {
+    box-shadow: 0 0 0 4px var(--primary-color), 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #d1fae5; /* Light green background */
+}
+
+/* Active Nav Link Style (Desktop) */
+.main-nav-link.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 2px;
+}
+
+/* HIỆU ỨNG Gạch chân mượt mà */
+.nav-underline-effect {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-underline-effect::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px; /* Điều chỉnh vị trí gạch chân */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    transition: width 0.3s ease-in-out;
+}
+
+.nav-underline-effect:hover::after,
+.main-nav-link.active::after {
+    width: 100%;
+}
+
+/* MEGA MENU STYLING: Chuyển từ hover sang click (thêm class 'open') */
+.mega-menu {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    display: none; /* Mặc định ẩn */
+}
+.mega-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+    display: block; /* Hiện khi có class open */
+}
+
+.mega-menu-item {
+    transition: background-color 0.15s;
+}
+.mega-menu-item:hover {
+    background-color: #f3f4f6; /* Hover nhẹ nhàng */
+}
+
+/* Active Nav Link Style (Mobile) */
+.mobile-nav-link.active {
+    background-color: #1f2937; /* Gray 800 */
+    color: var(--primary-color);
+}
+
+
+/* Modal styling */
+.modal-fade-enter-active, .modal-fade-leave-active {
+    transition: opacity 0.3s;
+}
+.modal-fade-enter, .modal-fade-leave-to {
+    opacity: 0;
+}

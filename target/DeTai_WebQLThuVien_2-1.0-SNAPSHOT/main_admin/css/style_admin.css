@@ -1,0 +1,91 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Oct 23, 2025, 3:55:24 PM
+    Author     : PC
+*/
+
+/* Định nghĩa màu sắc theo phong cách Xanh Biển/Kem của bạn */
+        :root {
+            --dark-blue: #1C4C7B; 
+            --medium-blue: #3E7CB1; 
+            --light-blue: #72ADD7; 
+            --cream: #F8F7DC; 
+            --text-dark: #1F2937;
+            --bs-body-bg: var(--cream);
+            --bs-body-color: var(--text-dark);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .bg-dark-blue { background-color: var(--dark-blue) !important; }
+        .text-medium-blue { color: var(--medium-blue) !important; }
+        .bg-medium-blue { background-color: var(--medium-blue) !important; }
+        .btn-medium-blue { 
+            background-color: var(--medium-blue);
+            color: white;
+            border-color: var(--medium-blue);
+        }
+        .btn-medium-blue:hover {
+            background-color: var(--light-blue);
+            border-color: var(--light-blue);
+        }
+
+        /* Custom Styles cho Sidebar */
+        .sidebar-custom {
+            width: 280px;
+            background-color: var(--dark-blue);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1050;
+        }
+        .main-content {
+            margin-left: 280px;
+        }
+
+        .sidebar-link-item {
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease-in-out;
+            color: #d1d5db; /* gray-300 */
+            text-decoration: none;
+        }
+        .sidebar-link-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--light-blue);
+            text-decoration: none;
+        }
+        .sidebar-link-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: var(--light-blue);
+            border-left-color: var(--light-blue);
+            font-weight: 600;
+        }
+        
+        /* Table Hover */
+        .table-row-hover:hover {
+            background-color: rgba(248, 247, 220, 0.7);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Pagination Custom */
+        .pagination .page-item .page-link {
+            border: none;
+            border-radius: 8px;
+            margin: 0 4px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: var(--medium-blue);
+            color: white;
+            border-color: var(--medium-blue);
+        }
+        .pagination .page-item:not(.active) .page-link:hover {
+            background-color: rgba(62, 124, 177, 0.1);
+        }
